@@ -372,71 +372,72 @@ void Purchase(){
 }
 
 int main() {
-	PackedGroceries p; // declaration of object PackedGroceries
-	FreshGroceries f; // declaration of object for class FreshGroceries
+    PackedGroceries p; // declaration of object PackedGroceries
+    FreshGroceries f; // declaration of object for class FreshGroceries
 
-	for (int i = 0; i < 1000; i++) {
-		system("cls");
-		cout << "Main Menu: \n";
-		cout << "1. List all products\n";
-		cout << "2. Add Packed Groceries \n";
-		cout << "3. Add Fresh Groceries\n";
-		cout << "4. Purchase\n";
-		cout << "Your choice: \n";
+    for (int i = 0; i < 1000; i++) {
+        // Clear the console using a safer method
+        cout << "\033[2J\033[1;1H"; // ANSI escape code for clearing the screen
+        cout << "Main Menu: \n";
+        cout << "1. List all products\n";
+        cout << "2. Add Packed Groceries \n";
+        cout << "3. Add Fresh Groceries\n";
+        cout << "4. Purchase\n";
+        cout << "Your choice: \n";
 
-		switch (_getch()) {
-		case '1': {
-			system("cls");
-			ifstream inPacked("Packed", ios::binary);
-			ifstream inFresh("Fresh", ios::binary);
+        switch (_getch()) {
+        case '1': {
+            cout << "\033[2J\033[1;1H"; // Clear screen
+            ifstream inPacked("Packed", ios::binary);
+            ifstream inFresh("Fresh", ios::binary);
 
-			// displaying the list of packed products
-			cout << left << setw(20) << "Name" << setw(15) << "UIC" << setw(20) << "Price" << setw(15) << "Quantity" << endl;
-			while (inPacked.read((char*)&p, sizeof(PackedGroceries))) {
-				p.display();
-			}
+            // displaying the list of packed products
+            cout << left << setw(20) << "Name" << setw(15) << "UIC" << setw(20) << "Price" << setw(15) << "Quantity" << endl;
+            while (inPacked.read((char*)&p, sizeof(PackedGroceries))) {
+                p.display();
+            }
 
-			// displaying the list of fresh products
-			while ( inFresh.read((char*)&f, sizeof(FreshGroceries))) {
-				f.display();
-			}
+            // displaying the list of fresh products
+            while ( inFresh.read((char*)&f, sizeof(FreshGroceries))) {
+                f.display();
+            }
 
-			// closing the files after execution
-			inPacked.close();
-			inFresh.close();	
-			system("pause");
-		}break;
+            // closing the files after execution
+            inPacked.close();
+            inFresh.close();    
+            system("pause");
+        }break;
 
-		case '2': {
-			system("cls");
-			// inputing the info for the new item
-			ofstream outPacked("Packed", ios::binary | ios::app);
-			p.input();
-			// writing to binary file
-			outPacked.write((char*)&p, sizeof(PackedGroceries));
-			outPacked.close();
-		}break;
+        case '2': {
+            cout << "\033[2J\033[1;1H"; // Clear screen
+            // inputing the info for the new item
+            ofstream outPacked("Packed", ios::binary | ios::app);
+            p.input();
+            // writing to binary file
+            outPacked.write((char*)&p, sizeof(PackedGroceries));
+            outPacked.close();
+        }break;
 
-		case '3': {
-			system("cls");
-			ofstream outFresh("Fresh", ios::binary | ios::app);
-			// inputing the info for the new item
-			f.input();
-			// writing to binary file the data inputted by user
-			outFresh.write((char*)&f, sizeof(FreshGroceries));
-			outFresh.close();
-		}break;
+        case '3': {
+            cout << "\033[2J\033[1;1H"; // Clear screen
+            ofstream outFresh("Fresh", ios::binary | ios::app);
+            // inputing the info for the new item
+            f.input();
+            // writing to binary file the data inputted by user
+            outFresh.write((char*)&f, sizeof(FreshGroceries));
+            outFresh.close();
+        }break;
 
-		case '4': {
-			Purchase(); // function for customer purchasing
-		}break;
+        case '4': {
+            Purchase(); // function for customer purchasing
+        }break;
 
 
-		default: {
-			cout << "Your choise is not available in menu!\nPlese, try one more time.\n\n";
-		}
-		
-		} // swich ends
-	} // for loop ends
-	return 0;
+        default: {
+            cout << "Your choise is not available in menu!\nPlese, try one more time.\n\n";
+        }
+        
+        } // swich ends
+    } // for loop ends
+    return 0;
 }
