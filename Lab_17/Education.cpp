@@ -182,7 +182,8 @@ void F_First_Program_Menu() {
 	Casual_Typist casual;
 
 	for (int k = 0; k < 1000; k++) {
-		system("cls");
+		// Clear the console using a safer method
+		cout << "\033[2J\033[1;1H"; // ANSI escape code for clearing the screen
 		cout << "\tM A I N  M E N U\n";
 		cout << "      =====================\n";
 		cout << " 1. Teacher\n";
@@ -193,7 +194,7 @@ void F_First_Program_Menu() {
 		switch (_getch())
 		{
 		case '1': {
-			system("cls");
+			cout << "\033[2J\033[1;1H";
 			cout << "\t T E A C H E R\n";
 			cout << "===================================\n";
 			teacher.getdata();
@@ -205,7 +206,7 @@ void F_First_Program_Menu() {
 		}break;
 
 		case '2': {
-			system("cls");
+			cout << "\033[2J\033[1;1H";
 			cout << "\t O F F I C E R\n";
 			cout << "===================================\n";
 			officer.getdata();
@@ -218,14 +219,14 @@ void F_First_Program_Menu() {
 
 		case '3': {
 			for (int l = 0; l < 1000; l++) {
-				system("cls");
+				cout << "\033[2J\033[1;1H";
 				cout << "\t T Y P I S T\n";
 				cout << "===================================\n";
 				cout << " 1. Regular typist\n"; cout << " 2. Casual typist\n"; cout << " 0. Back\n"; cout << " Your choice: \n";
 				switch (_getch())
 				{
 				case '1': {
-					system("cls");
+					cout << "\033[2J\033[1;1H";
 					cout << "\t R E G U L A R  T Y P I S T\n";
 					cout << "===================================\n";
 					regular.getdata();
@@ -238,7 +239,7 @@ void F_First_Program_Menu() {
 						break;
 
 				case '2': {
-					system("cls");
+					cout << "\033[2J\033[1;1H";
 					cout << "\t C A S U A L  T Y P I S T\n";
 					cout << "===================================\n";
 					casual.getdata();
@@ -250,7 +251,7 @@ void F_First_Program_Menu() {
 				}
 						break;
 				case '0': {
-					system("cls");
+					cout << "\033[2J\033[1;1H";
 					l = 1000;
 				}break;
 				default: {cout << endl << endl;
@@ -261,7 +262,7 @@ void F_First_Program_Menu() {
 			} // for
 		}break;
 		case '0': {
-			system("cls");
+			cout << "\033[2J\033[1;1H";
 			k = 1000;
 		} break;
 		default: { cout << endl << endl;
