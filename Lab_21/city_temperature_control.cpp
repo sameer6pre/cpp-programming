@@ -241,7 +241,11 @@ void CityTemperatureInfo() {
 			// searching the city by its ID
 			int ID;
 			cout << "\nEnter ID of city which you want to delete: ";
-			cin >> ID;
+			while (!(cin >> ID)) {
+				cout << "Invalid input. Please enter a valid numeric ID: ";
+				cin.clear();
+				cin.ignore(numeric_limits<streamsize>::max(), '\n');
+			}
 
 			ifstream inTemperature1;
 			inTemperature1.open("Temperature", ios::binary);
@@ -292,7 +296,11 @@ void CityTemperatureInfo() {
 			// searching the city by its ID
 			int ID;
 			cout << "Enter ID of city which you want to delete: ";
-			cin >> ID;
+			while (!(cin >> ID)) {
+				cout << "Invalid input. Please enter a valid numeric ID: ";
+				cin.clear();
+				cin.ignore(numeric_limits<streamsize>::max(), '\n');
+			}
 
 			ofstream outTemperatureTemp("TemperatureTemp", ios::binary);
 			ifstream inTemperature("Temperature", ios::binary);
@@ -332,7 +340,6 @@ void CityTemperatureInfo() {
 		} // switch
 
 	} // for loop
-
 
 }
 
