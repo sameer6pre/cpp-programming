@@ -171,7 +171,10 @@ int main() {
 	//
 	F_First_Program_Menu();
 
-	system("pause");
+	// Use a safer alternative to pause the program
+	std::cout << "Press Enter to continue...";
+	std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+
 	return 0;
 }
 void F_First_Program_Menu() {
