@@ -98,87 +98,103 @@ public:
 
 int main()
 {
-	int choice;
-	cout << "1. Student" << endl;
-	cout << "2. Employee" << endl;
-	cout << "Your choice: ";
-	cin >> choice;
-	cout << endl;
+    int choice;
+    cout << "1. Student" << endl;
+    cout << "2. Employee" << endl;
+    cout << "Your choice: ";
+    cin >> choice;
+    cout << endl;
 
-	Student student;   // creating an object of a class "Student"
-	Employee employee; // creating an object of a class "Employee"
-	switch (choice)
-	{
-	case 1:
-	{
-		student.TakeData();
-		cout << endl;
-		student.showData();
-	}
-	break;
-	case 2:
-	{
-		while (true)
-		{
-			system("cls");
-			int choice_employee;
+    Student student;   // creating an object of a class "Student"
+    Employee employee; // creating an object of a class "Employee"
+    switch (choice)
+    {
+    case 1:
+    {
+        student.TakeData();
+        cout << endl;
+        student.showData();
+    }
+    break;
+    case 2:
+    {
+        while (true)
+        {
+            // Clear screen alternative
+            cout << string(100, '\n');
+            int choice_employee;
 
-			cout << "1. Input Employee Details\n";
-			cout << "2. Display Employee Details\n";
-			cout << "3. Display Salary\n";
-			cin >> choice_employee;
-			switch (choice_employee)
-			{
-			case 1:
-			{
-				string x, y;
-				int z, i;
-				system("cls");
-				cout << "\t\t\tEmployee information\n";
-				cout << "Employee_ID: ";
-				cin >> x;
-				cout << "Employee_Name: ";
-				cin >> y;
-				cout << "Number of worked Hours: ";
-				cin >> z;
-				cout << "Rate per Hour: ";
-				cin >> i;
-				cout << endl;
-				employee.setEmployee_ID(x);
-				employee.setEmployee_Name(y);
-				employee.setHours(z);
-				employee.setRate(i);
-				system("pause");
-			}
-			break;
-			case 2:
-			{
-				system("cls");
-				cout << "ID: " << employee.getEmployee_ID() << endl;
-				cout << "Name: " << employee.getEmployee_Name() << endl;
-				cout << "Hours: " << employee.getHours() << endl;
-				cout << "Rate: " << employee.getRate() << endl;
-				system("pause");
-			}
-			break;
-			case 3:
-			{
-				system("cls");
-				cout << "Total salary: " << employee.total_salary() << endl;
-				system("pause");
-			}
-			break;
-			default:
-				cout << "Incorrect input! Try again!" << endl;
-				break;
-			}
-		}
-	}
-	break;
-	default:
-		cout << "Incorrect input! Try again!" << endl;
-		break;
-	}
-	system("pause");
-	return 0;
+            cout << "1. Input Employee Details\n";
+            cout << "2. Display Employee Details\n";
+            cout << "3. Display Salary\n";
+            cin >> choice_employee;
+            switch (choice_employee)
+            {
+            case 1:
+            {
+                string x, y;
+                int z, i;
+                // Clear screen alternative
+                cout << string(100, '\n');
+                cout << "\t\t\tEmployee information\n";
+                cout << "Employee_ID: ";
+                cin >> x;
+                cout << "Employee_Name: ";
+                cin >> y;
+                cout << "Number of worked Hours: ";
+                cin >> z;
+                cout << "Rate per Hour: ";
+                cin >> i;
+                cout << endl;
+                employee.setEmployee_ID(x);
+                employee.setEmployee_Name(y);
+                employee.setHours(z);
+                employee.setRate(i);
+                // Pause alternative
+                cout << "Press Enter to continue...";
+                cin.ignore();
+                cin.get();
+            }
+            break;
+            case 2:
+            {
+                // Clear screen alternative
+                cout << string(100, '\n');
+                cout << "ID: " << employee.getEmployee_ID() << endl;
+                cout << "Name: " << employee.getEmployee_Name() << endl;
+                cout << "Hours: " << employee.getHours() << endl;
+                cout << "Rate: " << employee.getRate() << endl;
+                // Pause alternative
+                cout << "Press Enter to continue...";
+                cin.ignore();
+                cin.get();
+            }
+            break;
+            case 3:
+            {
+                // Clear screen alternative
+                cout << string(100, '\n');
+                cout << "Total salary: " << employee.total_salary() << endl;
+                // Pause alternative
+                cout << "Press Enter to continue...";
+                cin.ignore();
+                cin.get();
+            }
+            break;
+            default:
+                cout << "Incorrect input! Try again!" << endl;
+                break;
+            }
+        }
+    }
+    break;
+    default:
+        cout << "Incorrect input! Try again!" << endl;
+        break;
+    }
+    // Pause alternative
+    cout << "Press Enter to exit...";
+    cin.ignore();
+    cin.get();
+    return 0;
 }
