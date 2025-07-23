@@ -514,7 +514,11 @@ void CityHumidityInfo() {
 			// searching the city by its ID
 			int ID;
 			cout << "\nEnter ID of city which you want to delete: ";
-			cin >> ID;
+			while (!(cin >> ID)) {
+				cin.clear();
+				cin.ignore(numeric_limits<streamsize>::max(), '\n');
+				cout << "Invalid input. Please enter a valid numeric ID: ";
+			}
 
 			ifstream inHumidity1;
 			inHumidity1.open("Humidity", ios::binary);
@@ -563,7 +567,11 @@ void CityHumidityInfo() {
 			// searching the city by its ID
 			int ID;
 			cout << "Enter ID of city which you want to delete: ";
-			cin >> ID;
+			while (!(cin >> ID)) {
+				cin.clear();
+				cin.ignore(numeric_limits<streamsize>::max(), '\n');
+				cout << "Invalid input. Please enter a valid numeric ID: ";
+			}
 
 			ofstream outHumidityTemp("HumidityTemp", ios::binary);
 			ifstream inHumidity("Humidity", ios::binary);
@@ -603,7 +611,6 @@ void CityHumidityInfo() {
 		} // switch
 
 	} // for loop
-
 
 }
 
