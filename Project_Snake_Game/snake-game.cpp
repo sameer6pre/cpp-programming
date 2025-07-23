@@ -49,48 +49,73 @@ void Init() {
 
 //Creating a map container where snake and fruit appears 
 void Map() {
-	system("cls");
-	SetConsoleTextAttribute(hConsole, 180);
-	for (int i = 0; i < width + 2; i++)
-		cout << "#";
-	cout << endl;
+    // Clear the console screen securely without using system calls
+    #ifdef _WIN32
+        HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+        CONSOLE_SCREEN_BUFFER_INFO csbi;
+        DWORD count;
+        DWORD cellCount;
+        COORD homeCoords = { 0, 0 };
 
-	for (int i = 0; i < height; i++)
-	{
-		for (int j = 0; j < width; j++)
-		{
-			if (j == 0)
-				cout << "#";
-			if (i == y && j == x)
-				cout << "O";
-			else if (i == fy && j == fx)
-				cout << "X";
-			else
-			{
-				bool print = false;
-				for (int k = 0; k < nt; k++) {
-					if (tx[k] == j && ty[k] == i)
-					{
-						cout << "o";
-						print = true;
-					}
+        if (hConsole == INVALID_HANDLE_VALUE) return;
 
-				}
-				if (!print)
-					cout << " ";
-			}
+        // Get the number of cells in the current buffer
+        if (!GetConsoleScreenBufferInfo(hConsole, &csbi)) return;
+        cellCount = csbi.dwSize.X * csbi.dwSize.Y;
 
-			if (j == width - 1)
-				cout << "#";
-		}
-		cout << endl;
-	}
+        // Fill the entire buffer with spaces
+        if (!FillConsoleOutputCharacter(hConsole, (TCHAR)' ', cellCount, homeCoords, &count)) return;
 
-	for (int i = 0; i < width + 2; i++)
-		cout << "#";
-	cout << endl;
-	cout << "Score is " << score << endl;
+        // Fill the entire buffer with the current colors and attributes
+        if (!FillConsoleOutputAttribute(hConsole, csbi.wAttributes, cellCount, homeCoords, &count)) return;
 
+        // Move the cursor home
+        SetConsoleCursorPosition(hConsole, homeCoords);
+    #else
+        // For non-Windows systems, use ANSI escape codes
+        std::cout << "\033[2J\033[H";
+    #endif
+
+    SetConsoleTextAttribute(hConsole, 180);
+    for (int i = 0; i < width + 2; i++)
+        std::cout << "#";
+    std::cout << std::endl;
+
+    for (int i = 0; i < height; i++)
+    {
+        for (int j = 0; j < width; j++)
+        {
+            if (j == 0)
+                std::cout << "#";
+            if (i == y && j == x)
+                std::cout << "O";
+            else if (i == fy && j == fx)
+                std::cout << "X";
+            else
+            {
+                bool print = false;
+                for (int k = 0; k < nt; k++) {
+                    if (tx[k] == j && ty[k] == i)
+                    {
+                        std::cout << "o";
+                        print = true;
+                    }
+
+                }
+                if (!print)
+                    std::cout << " ";
+            }
+
+            if (j == width - 1)
+                std::cout << "#";
+        }
+        std::cout << std::endl;
+    }
+
+    for (int i = 0; i < width + 2; i++)
+        std::cout << "#";
+    std::cout << std::endl;
+    std::cout << "Score is " << score << std::endl;
 }
 // managing input of keyboard to control snake
 void Input() {
