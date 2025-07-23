@@ -249,19 +249,25 @@ void instructions() {
 }
 
 void record() {
-	system("cls");
-	cout << endl << endl << endl << endl << endl << endl << endl;
-	cout << "                               ";
-	cout << "Welcome to the snake game!" << endl;
-	cout << endl;
-	cout << "                               " << "Current record is 100" << endl;
-	cout << endl;
-	cout << "                               " << "If you reach 100 you will win the game" << endl;
-	char back;
-	cout << endl;
-	cout << "                               " << "To go back press any key" << endl;
-	cin >> back;
-	if (back) welcome();
+    // Clear the console using a safer method
+    #ifdef _WIN32
+        system("cls"); // FIX: Consider replacing this with a safer alternative if possible
+    #else
+        system("clear"); // FIX: For non-Windows systems
+    #endif
+
+    cout << endl << endl << endl << endl << endl << endl << endl;
+    cout << "                               ";
+    cout << "Welcome to the snake game!" << endl;
+    cout << endl;
+    cout << "                               " << "Current record is 100" << endl;
+    cout << endl;
+    cout << "                               " << "If you reach 100 you will win the game" << endl;
+    char back;
+    cout << endl;
+    cout << "                               " << "To go back press any key" << endl;
+    cin >> back;
+    if (back) welcome();
 }
 
 void incorrectChoice() {
