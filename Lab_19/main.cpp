@@ -222,50 +222,68 @@ void F_Third_Program()
 	}	  // for loop
 }
 
+#include <iostream>
+#include <conio.h>
+using namespace std;
+
+void clearScreen() {
+    // Platform-independent screen clear
+    #ifdef _WIN32
+        system("cls");
+    #else
+        system("clear");
+    #endif
+}
+
+void pauseExecution() {
+    cout << "Press any key to continue...";
+    _getch();
+}
+
 int main()
 {
-	for (int k = 0; k < 1000; k++)
-	{
-		system("cls");
-		cout << "M A I N  M E N U\n"
-			 << "-------------------\n"
-			 << "1. First Program\n"
-			 << "2. Second Program\n"
-			 << "3. Third Program\n"
-			 << "Your choice: \n";
+    for (int k = 0; k < 1000; k++)
+    {
+        clearScreen();
+        cout << "M A I N  M E N U\n"
+             << "-------------------\n"
+             << "1. First Program\n"
+             << "2. Second Program\n"
+             << "3. Third Program\n"
+             << "Your choice: \n";
 
-		switch (_getch())
-		{
-		case 49:
-			system("cls");
-			F_First_Program();
-			system("pause");
-			break;
+        switch (_getch())
+        {
+        case 49:
+            clearScreen();
+            F_First_Program();
+            pauseExecution();
+            break;
 
-		case 50:
-			system("cls");
-			F_Second_Program();
-			system("pause");
-			break;
+        case 50:
+            clearScreen();
+            F_Second_Program();
+            pauseExecution();
+            break;
 
-		case 51:
-			system("cls");
-			F_Third_Program();
-			system("pause");
-			break;
+        case 51:
+            clearScreen();
+            F_Third_Program();
+            pauseExecution();
+            break;
 
-		case 48:
-			return 0;
-			break;
+        case 48:
+            return 0;
+            break;
 
-		default:
-			cout << "Your choice is not available in Menu.\nPlease try one more time\n";
-			system("pause");
-			break;
+        default:
+            cout << "Your choice is not available in Menu.\nPlease try one more time\n";
+            pauseExecution();
+            break;
 
-		} // switch
-	}	  // for loop
+        } // switch
+    }     // for loop
 
-	system("pause");
-	return 0;
+    pauseExecution();
+    return 0;
 }
