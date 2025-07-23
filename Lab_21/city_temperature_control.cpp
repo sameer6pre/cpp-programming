@@ -341,7 +341,8 @@ void CityRainFallInfo() {
 	CityRainFall R;
 
 	for (int i = 0; i < 1000; i++) {
-		system("cls");
+		// Clear the console using a safer method
+		cout << "\033[2J\033[1;1H"; // ANSI escape codes for clearing the screen
 
 		cout << "City RainFall Information: \n";
 		cout << "1. Add\n";
@@ -355,7 +356,7 @@ void CityRainFallInfo() {
 		switch (_getch())
 		{
 		case '1': {
-			system("cls");
+			cout << "\033[2J\033[1;1H"; // Clear screen
 			cout << "ADD DATA TO CITY\n";
 			cout << "Enter RainFall data of city: " << endl;
 			// Add to List
@@ -364,17 +365,19 @@ void CityRainFallInfo() {
 			outR.write((char*)&R, sizeof(CityRainFall));
 			outR.close();
 
-			system("pause");
+			cout << "Press any key to continue...";
+			cin.ignore();
+			cin.get();
 		}break;
 
 		case '2': {
-			system("cls");
+			cout << "\033[2J\033[1;1H"; // Clear screen
 
 			ifstream inP("R", ios::binary);
 			while (inP.read((char*)&R, sizeof(CityRainFall))) {
 				R.getClimateData();
 			}
-			inP.close();			// closing the files after execution
+			inP.close();
 
 			// searching the city by its ID
 			int ID;
@@ -412,11 +415,13 @@ void CityRainFallInfo() {
 			out.close();
 			cout << "\nSuccessfully updated" << endl;
 
-			system("pause");
+			cout << "Press any key to continue...";
+			cin.ignore();
+			cin.get();
 		}break;
 
 		case '3': {
-			system("cls");
+			cout << "\033[2J\033[1;1H"; // Clear screen
 
 			cout << "DELETING DATA FROM CITY\n";
 
@@ -424,7 +429,7 @@ void CityRainFallInfo() {
 			while (inP.read((char*)&R, sizeof(CityRainFall))) {
 				R.getClimateData();
 			}
-			inP.close();			// closing the files after execution
+			inP.close();
 			// searching the city by its ID
 			int ID;
 			cout << "Enter ID of city which you want to delete: ";
@@ -450,9 +455,11 @@ void CityRainFallInfo() {
 			while (inP2.read((char*)&R, sizeof(CityRainFall))) {
 				R.getClimateData();
 			}
-			inP2.close();			// closing the files after execution
+			inP2.close();
 
-			system("pause");
+			cout << "Press any key to continue...";
+			cin.ignore();
+			cin.get();
 		}break;
 
 		case '0': {
@@ -462,13 +469,14 @@ void CityRainFallInfo() {
 
 		default: {
 			cout << "Your choice is not available in menu!\n";
-			system("pause");
+			cout << "Press any key to continue...";
+			cin.ignore();
+			cin.get();
 		}
 			   break;
 		} // switch
 
 	} // for loop
-
 
 }
 
