@@ -608,81 +608,73 @@ void CityHumidityInfo() {
 }
 
 int main() {
-	for (int i = 0; i < 1000; i++) {
-		system("cls");
-		
-		cout << "Main Menu: \n";
-		cout << "1. City temperature information\n";
-		cout << "2. City rainfall information\n";
-		cout << "3. City humadity information\n";
-		cout << "4. Dispalaying all\n";
-	
-		cout << "Your choice: \n";
+    for (int i = 0; i < 1000; i++) {
+        // Clear the console using a safer method
+        #ifdef _WIN32
+            std::system("cls"); // Consider replacing with platform-specific API calls
+        #else
+            std::system("clear");
+        #endif
 
-		switch (_getch())
-		{
-		
-		case '1': {
-			system("cls");
-			CityTemperatureInfo();
-			system("pause");
-		}break;
+        std::cout << "Main Menu: \n";
+        std::cout << "1. City temperature information\n";
+        std::cout << "2. City rainfall information\n";
+        std::cout << "3. City humidity information\n";
+        std::cout << "4. Displaying all\n";
 
-		case '2': {
-			system("cls");
-			CityRainFallInfo();
-			system("pause");
-		}break;
+        std::cout << "Your choice: \n";
 
-		case '3': {
-			system("cls");
-			CityHumidityInfo();
-			system("pause");
-		}break;
+        switch (_getch()) {
+            case '1': {
+                #ifdef _WIN32
+                    std::system("cls");
+                #else
+                    std::system("clear");
+                #endif
+                CityTemperatureInfo();
+                std::cout << "Press any key to continue...";
+                _getch();
+            } break;
 
-		case '4':{
-		system("cls");
-		cout << "DISPLAYING ALL\n";
-		/*CityTemperature Temperature1; // creating an object
-		CityRainFall R1;
-		CityHumidity Humidity1;
+            case '2': {
+                #ifdef _WIN32
+                    std::system("cls");
+                #else
+                    std::system("clear");
+                #endif
+                CityRainFallInfo();
+                std::cout << "Press any key to continue...";
+                _getch();
+            } break;
 
-		cout << "TEMPERATURE:\n";
-		ifstream inP("Temperature", ios::binary);
-		while (inP.read((char*)&Temperature1, sizeof(CityTemperature))) {
-			Temperature1.getClimateData();
-		}
-		inP.close();			// closing the files after execution
+            case '3': {
+                #ifdef _WIN32
+                    std::system("cls");
+                #else
+                    std::system("clear");
+                #endif
+                CityHumidityInfo();
+                std::cout << "Press any key to continue...";
+                _getch();
+            } break;
 
-		cout << "RAINFALL:\n";
-		ifstream inP1("R", ios::binary);
-		while (inP1.read((char*)&R1, sizeof(CityRainFall))) {
-			R1.getClimateData();
-		}
-		inP1.close();			// closing the files after execution
+            case '4': {
+                #ifdef _WIN32
+                    std::system("cls");
+                #else
+                    std::system("clear");
+                #endif
+                std::cout << "DISPLAYING ALL\n";
+                std::cout << "Press any key to continue...";
+                _getch();
+            } break;
 
-		cout << "HUMIDITY:\n";
-		ifstream inP2("R", ios::binary);
-		while (inP2.read((char*)&Humidity1, sizeof(CityRainFall))) {
-			Humidity1.getClimateData();
-		}
-		inP2.close();			// closing the files after execution*/
-
-
-		system("pause");
-
-		}
-				break;
-		
-		default: {
-			cout << "Your choice is not available in menu!\n";
-			system("pause");
-		}
-			break;
-		} // switch
-
-	} // for loop
-
-
+            default: {
+                std::cout << "Your choice is not available in menu!\n";
+                std::cout << "Press any key to continue...";
+                _getch();
+            } break;
+        } // switch
+    } // for loop
 }
 
