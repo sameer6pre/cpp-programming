@@ -124,57 +124,59 @@ void Input() {
 }
 // logic how snake should grow in size and when game stops
 void Logic() {
+    if (nt > MAX_SIZE) { // Ensure nt does not exceed the array bounds
+        lostgame();
+        return;
+    }
 
-	int prevx = tx[0];
-	int prevy = ty[0];
-	int prev2x, prev2y;
-	tx[0] = x;
-	ty[0] = y;
-	for (int i = 1; i < nt; i++) {
-		prev2x = tx[i];
-		prev2y = ty[i];
-		tx[i] = prevx;
-		ty[i] = prevy;
-		prevx = prev2x;
-		prevy = prev2y;
-	}
+    int prevx = tx[0];
+    int prevy = ty[0];
+    int prev2x, prev2y;
+    tx[0] = x;
+    ty[0] = y;
+    for (int i = 1; i < nt; i++) {
+        prev2x = tx[i];
+        prev2y = ty[i];
+        tx[i] = prevx;
+        ty[i] = prevy;
+        prevx = prev2x;
+        prevy = prev2y;
+    }
 
+    switch (dir)
+    {
+    case UP:
+        y--;
+        break;
+    case DOWN:
+        y++;
+        break;
+    case LEFT:
+        x--;
+        break;
+    case RIGHT:
+        x++;
+        break;
 
+    default:
+        break;
+    }
+    if (x >= width) x = 0; else if (x < 0) x = width - 1;
+    if (y >= height) y = 0; else if (y < 0) y = height - 1;
 
-	switch (dir)
-	{
-	case UP:
-		y--;
-		break;
-	case DOWN:
-		y++;
-		break;
-	case LEFT:
-		x--;
-		break;
-	case RIGHT:
-		x++;
-		break;
+    for (int i = 0; i < nt; i++) {
+        if (tx[i] == x && ty[i] == y) {
+            lostgame();
+        }
 
-	default:
-		break;
-	}
-	if (x >= width) x = 0; else if (x < 0) x = width - 1;
-	if (y >= height) y = 0; else if (y < 0) y = height - 1;
+    }
 
-	for (int i = 0; i < nt; i++) {
-		if (tx[i] == x && ty[i] == y) {
-			lostgame();
-		}
-
-	}
-
-	if (x == fx && y == fy) {
-		score += 1;
-		nt++;
-		fx = rand() % width;
-		fy = rand() % height;
-	}
+    if (x == fx && y == fy) {
+        score += 1;
+        nt++;
+        fx = rand() % width;
+        fy = rand() % height;
+    }
 }
 //condition when a player wins
 void win() {
