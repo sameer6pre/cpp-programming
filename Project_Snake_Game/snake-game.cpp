@@ -230,22 +230,26 @@ void welcome() {
 }
 
 void instructions() {
-	system("cls");
-	cout << endl << endl << endl << endl << endl << endl << endl;
-	cout << "                               ";
-	cout << "Welcome to the snake game!" << endl;
-	cout << endl;
-	cout << "                               " << "Here are instructions" << endl;
-	cout << "                               " << "1. If you reach current record you won the game" << endl;
-	cout << endl;
-	cout << "                               " << "2. When you grow up in size you cannot touch yourself, " << endl << "                               " << "if you touch you will lose the game" << endl;
-	cout << endl;
-	cout << "                               " << "3. When you grow up in size you cannot touch yourself," << endl << "                               " << "if you move backwards when you body is backward" << endl << "                               " << "you automatically lose the game" << endl;
-	cout << endl;
-	char back;
-	cout << "                               " << "To go back press any key" << endl;
-	cin >> back;
-	if (back) welcome();
+    #if defined(_WIN32) || defined(_WIN64)
+        system("cls"); // Clear screen for Windows
+    #else
+        system("clear"); // Clear screen for Unix/Linux
+    #endif
+    cout << endl << endl << endl << endl << endl << endl << endl;
+    cout << "                               ";
+    cout << "Welcome to the snake game!" << endl;
+    cout << endl;
+    cout << "                               " << "Here are instructions" << endl;
+    cout << "                               " << "1. If you reach current record you won the game" << endl;
+    cout << endl;
+    cout << "                               " << "2. When you grow up in size you cannot touch yourself, " << endl << "                               " << "if you touch you will lose the game" << endl;
+    cout << endl;
+    cout << "                               " << "3. When you grow up in size you cannot touch yourself," << endl << "                               " << "if you move backwards when you body is backward" << endl << "                               " << "you automatically lose the game" << endl;
+    cout << endl;
+    char back;
+    cout << "                               " << "To go back press any key" << endl;
+    cin >> back;
+    if (back) welcome();
 }
 
 void record() {
