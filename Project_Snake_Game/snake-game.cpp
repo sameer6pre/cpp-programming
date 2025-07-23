@@ -273,21 +273,25 @@ void incorrectChoice() {
 	if (back) welcome();
 }
 void lostgame() {
-	game = false;
-	system("cls");
-	cout << endl << endl << endl << endl << endl << endl << endl;
-	cout << "                               ";
-	cout << "Sorry you lost the game " << endl;
-	cout << "                               " << "Your score was " << score << endl;
-	cout << "                               ";
-	cout << "To to back press any button" << endl;
-	char back;
-	cin >> back;
-	if (back) {
-		game = false;
-		welcome();
-	}
-
+    game = false;
+    // FIX: Use a platform-specific API to clear the screen instead of system("cls")
+    #ifdef _WIN32
+        system("cls"); // Windows-specific clear screen
+    #else
+        system("clear"); // Unix/Linux-specific clear screen
+    #endif
+    cout << endl << endl << endl << endl << endl << endl << endl;
+    cout << "                               ";
+    cout << "Sorry you lost the game " << endl;
+    cout << "                               " << "Your score was " << score << endl;
+    cout << "                               ";
+    cout << "To to back press any button" << endl;
+    char back;
+    cin >> back;
+    if (back) {
+        game = false;
+        welcome();
+    }
 }
 
 int main() {
