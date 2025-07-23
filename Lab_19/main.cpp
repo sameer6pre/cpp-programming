@@ -73,72 +73,74 @@ void F_First_Program()
 
 void F_Second_Program()
 {
+    for (int k = 0; k < 1000; k++)
+    {
+        // Clear the screen using a safer method
+        cout << "\033[2J\033[1;1H"; // ANSI escape codes for clearing the screen
+        cout << "C O N T A C T S\n"
+             << "------------------\n"
+             << "1. Add a contact\n"
+             << "2. Contacts\n"
+             << "0. Back\n"
+             << "Your choice: \n";
 
-	for (int k = 0; k < 1000; k++)
-	{
-		system("cls");
-		cout << "C O N T A C T S\n"
-			 << "------------------\n"
-			 << "1. Add a contact\n"
-			 << "2. Contacts\n"
-			 << "0. Back\n"
-			 << "Your choice: \n";
+        ofstream out_contacts("contacts.txt", ios::app);
 
-		ofstream out_contacts("contacts.txt", ios::app);
+        string name, phone;
 
-		string name, phone;
+        switch (_getch())
+        {
+            // case 49 is for adding a new contact into a list
+        case 49:
+        {
+            cout << "Adding a new contact. Input a contact info:\n\n";
 
-		switch (_getch())
-		{
-			// case 49 is for adding a new contact into a list
-		case 49:
-		{
-			system("cls");
-			cout << "Adding a new contact. Input a contact info:\n\n";
+            cout << "Enter the name: ";
+            cin >> name;
+            cout << "Enter the phone number: ";
+            cin >> phone;
 
-			cout << "Enter the name: ";
-			cin >> name;
-			cout << "Enter the phone number: ";
-			cin >> phone;
+            // storing the data in file
+            out_contacts << left << setw(12) << name << "\t" << phone << "\n";
+            out_contacts.close(); // closing the file
 
-			// storing the data in file
-			out_contacts << left << setw(12) << name << "\t" << phone << "\n";
-			out_contacts.close(); // closing the file
+            cout << "Successfully added!\n\n";
 
-			cout << "Successfully added!\n\n";
+            cout << "Press any key to continue...";
+            _getch();
+        }
+        break;
 
-			system("pause");
-		}
-		break;
+        case 50:
+        {
+            cout << "\033[2J\033[1;1H"; // Clear screen
+            ifstream in_contacts("contacts.txt"); // getting data from the file
+            while (in_contacts >> name >> phone)
+            {
+                // displaying the data
+                cout << left << setw(12) << name << "\t" << phone << endl;
+            }
+            in_contacts.close(); // closing the file
+            cout << "Press any key to continue...";
+            _getch();
+        }
+        break;
 
-		case 50:
-		{
-			system("cls");
-			ifstream in_contacts("contacts.txt"); // getting data from the file
-			while (in_contacts >> name >> phone)
-			{
-				// displaying the data
-				cout << left << setw(12) << name << "\t" << phone << endl;
-			}
-			in_contacts.close(); // closing the file
-			system("pause");
-		}
-		break;
+        case 48:
+        {
+            main(); // to back to main menu
+        }
+        break;
 
-		case 48:
-		{
-			main(); // to back to main menu
-		}
-		break;
-
-		default:
-		{
-			cout << "Your choice is not available in Menu.\nPlease try one more time\n";
-			system("pause");
-		}
-		break;
-		} // switch
-	}	  // for loop
+        default:
+        {
+            cout << "Your choice is not available in Menu.\nPlease try one more time\n";
+            cout << "Press any key to continue...";
+            _getch();
+        }
+        break;
+        } // switch
+    }     // for loop
 }
 
 void F_Third_Program()
