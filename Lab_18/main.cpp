@@ -41,11 +41,15 @@ public:
 // Rectangle class to calculate the area of rectangle
 class Rectanglee : public Shape
 {
+private:
+    double base = 0.0; // FIX: Initialize base
+    double height = 0.0; // FIX: Initialize height
+
 public:
-	void display_area()
-	{
-		cout << "Area of Rectangle: " << base * height << endl;
-	}
+    void display_area()
+    {
+        cout << "Area of Rectangle: " << base * height << endl;
+    }
 };
 
 class Circle : public Shape
