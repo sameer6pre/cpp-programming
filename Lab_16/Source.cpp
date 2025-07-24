@@ -274,7 +274,8 @@ public:
 	{
 		for (int i = 0; i < 1000; i++)
 		{
-			system("cls");
+			// FIX: Avoid using system("cls") and use a safer alternative
+			cout << "\033[2J\033[1;1H"; // ANSI escape codes to clear the console
 			cout << "\t U P D A T E  D E T A I L S\n";
 			cout << "=========================================\n";
 			cout << " Choose detail you want to update\n";
@@ -325,8 +326,8 @@ public:
 				Sleep(0700);
 				Sleep(0700);
 			} // switch
-		}
-	} // for loop
+		} // for loop
+	} // update
 };
 
 int main()
