@@ -1,10 +1,3 @@
-//U1910049 Rastam Zokirov
-//Lab assignment #4
-//Program to print Fibonacci series up to 100.
-//1,1,2,3,5,8,13...
-
-#include <iostream>
-using namespace std;
 int main() {
 	int a = 0, b = 1, sum = 0;
 	cout << a << endl;
@@ -18,6 +11,8 @@ int main() {
 		}
 		cout << sum << endl;
 	}
-	system("pause");
+	// Use a safe, portable blocking read instead of system("pause") to avoid invoking a shell
+	cout << "Press Enter to continue...";
+	cin.get(); // PRECOGS_FIX: Replaced system("pause") with a simple, safe input wait to avoid invoking the OS shell
 	return 0;
 }
