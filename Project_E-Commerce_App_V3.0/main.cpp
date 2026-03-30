@@ -52,6 +52,54 @@ string Owner_Parol_Sign = "1";
 void F_General_Menu();
 void F_Sign_in();
 void F_Developers();
+// "ALIBAZAR Version 3.0" - updated to avoid hardcoded owner credentials
+// Added secure owner credential initialization (load/create) and hashing
+#include <iostream>  // I/O stream
+#include <string>    // Text
+#include <ctime>     // Time 'sleep' function
+#include <ctype.h>   // Validation check
+#include <conio.h>   // 'getch' function
+#include <Windows.h> // Loading_Page
+#include <fstream>   // File handling 
+#include <iomanip>   // 'setfill' function
+#include <sstream>
+#include <functional>
+
+// Header Files
+// All extra classes are there
+#include "Products.h"     // Classes for products
+#include "Person.h"       // User part 
+#include "Loading_Page.h" // Loading Animation
+#include "Validation.h"   // Validation for User inputted information
+#include "Password_Vali_Asterisk.h"   // Password "********"
+
+using namespace std;
+
+// Objects
+Validation_C User_Validtaion;
+User User_1(Name_Memory, TellNum_Memory, Login_Memory, Parol_Memory);
+
+// Product Types
+Class_Of_Products1 Product1_1("Potatoes", "Vegetables & Fruits", 7890.0, 10), Product1_2("Carrots", "Vegetables & Fruits", 4890.0, 10), Product1_3("Onion", "Vegetables & Fruits", 3600.0, 10);
+Class_Of_Products2 Product2_1("Water", "Water & Beverages", 1590.0, 10), Product2_2("Pepsi", "Water & Beverages", 3590.0, 10), Product2_3("Nectar", "Water & Beverages", 7550.0, 10);
+Class_Of_Products3 Product3_1("Pizza", "Fast Food Products", 48000.0, 10), Product3_2("Burger", "Fast Food Products", 19000.0, 10), Product3_3("Potatoe Fries", "Fast Food Products", 15000.0, 10);
+
+
+// Global Values 
+long double Overall_Sum;
+float Ch_Price, Ch_Quantity;
+string Product_Name = "" , Product_Class = "";
+
+
+// Password and login for Owner
+string Owner_Login_Sign = "";
+string Owner_Parol_Sign = "";  
+
+// Functions 
+// Declaretion Functions
+void F_General_Menu();
+void F_Sign_in();
+void F_Developers();
 void F_Logo(); // Logo "AliBazar" for User
 void F_Logo_Owner(); // Logo "AliBazar" for Owner
 
@@ -70,15 +118,63 @@ void F_Owner_Products_Stotage();
 void F_Owner_Customers_List();
 
 
-///////////////////////////////////////////////////////////////////////////////
+static string HashStringHex(const string &s) {
+    // simple non-cryptographic hash for compatibility; replace with a proper crypto hash in production
+    size_t h = std::hash<string>{}(s);
+    std::stringstream ss;
+    ss << std::hex << h;
+    return ss.str();
+}
+
+static void InitOwnerCredentials() {
+    std::ifstream fin("owner.cfg");
+    if (fin) {
+        string login, passhash;
+        if (std::getline(fin, login) && std::getline(fin, passhash)) {
+            Owner_Login_Sign = login;
+            Owner_Parol_Sign = passhash; // PRECOGS_FIX: load hashed owner password from owner.cfg (avoid hardcoded creds)
+        }
+        fin.close();
+        return;
+    }
+
+    // No owner.cfg found: ask the first user to provision owner credentials
+    cout << "No owner credentials found. Create an owner account now." << endl;
+    cout << "Enter owner login: ";
+    string login;
+    // consume any leftover newline
+    if (cin.peek() == '\n') cin.get();
+    std::getline(cin, login);
+    cout << "Enter owner password: ";
+    string password;
+    std::getline(cin, password);
+
+    Owner_Login_Sign = login;
+    Owner_Parol_Sign = HashStringHex(password); // PRECOGS_FIX: store hashed password (do not leave default/hardcoded credentials)
+
+    std::ofstream fout("owner.cfg", std::ios::trunc);
+    if (fout) {
+        fout << Owner_Login_Sign << std::endl;
+        fout << Owner_Parol_Sign << std::endl;
+        fout.close();
+        cout << "Owner account created and saved to owner.cfg. Keep this file secure." << endl;
+    } else {
+        cout << "Warning: failed to write owner.cfg. Owner credentials exist only in memory for this session." << endl;
+    }
+}
+
+/////////////////////////////////////////////////////////////////////////////
 int main() {
 
-	//Loading
-	F_Loading();
-	F_General_Menu();
+    // Initialize owner credentials securely
+    InitOwnerCredentials();
 
-	system("pause");
-	return 0;
+    //Loading
+    F_Loading();
+    F_General_Menu();
+
+    system("pause");
+    return 0;
 }
 
 
@@ -207,95 +303,116 @@ void F_Developers() {
 
 
 void F_Sign_in() {
-	// Sign in Function
-	for (int i = 0; i < 1000; i++) {
-		system("cls");
-		cout << "____________________________________________________________________________________________________ \n";
-		cout << "        A L I B A Z A R                                                       S I G N  I N          \n";
-		cout << "____________________________________________________________________________________________________\n\n";
-		cout << "\t\t\t\t\t   Sign in\n\n";
-		cout << "\t\t\t\t\t1. Sign in as Owner" << endl;
-		cout << "\t\t\t\t\t2. Sign in as User" << endl;
-		cout << "\t\t\t\t\t0. Back" << endl << endl;
-		cout << "\t\t\t\t\t  Your Choice: ";
+    // Sign in Function
+    for (int i = 0; i < 1000; i++) {
+        system("cls");
+        cout << "____________________________________________________________________________________________________ \n";
+        cout << "        A L I B A Z A R                                                       S I G N  I N          \n";
+        cout << "____________________________________________________________________________________________________\n\n";
+        cout << "\t\t\t\t\t   Sign in\n\n";
+        cout << "\t\t\t\t\t1. Sign in as Owner" << endl;
+        cout << "\t\t\t\t\t2. Sign in as User" << endl;
+        cout << "\t\t\t\t\t0. Back" << endl << endl;
+        cout << "\t\t\t\t\t  Your Choice: ";
 
-		switch (_getch()) {
-		case 49: { // Sign in as Owner
+        switch (_getch()) {
+        case 49: { // Sign in as Owner
 
-			system("cls");
-			cout << "____________________________________________________________________________________________________ \n";
-			cout << "        A L I B A Z A R                                                          O W N E R          \n";
-			cout << "____________________________________________________________________________________________________\n\n";
-			cout << "\t\t\t\t        Owner Authentication\n\n";
-			cout << "\t\t\t\t\tLogin    : "; cin >> Login_Sign;
-			//cout << "\t\t\t\t\tPassword : "; cin >> Parol_Sign;
-			F_Password_Val();
-			Parol_Sign = Password_Val;
+            system("cls");
+            cout << "____________________________________________________________________________________________________ \n";
+            cout << "        A L I B A Z A R                                                          O W N E R          \n";
+            cout << "____________________________________________________________________________________________________\n\n";
+            cout << "\t\t\t\t        Owner Authentication\n\n";
+            cout << "\t\t\t\t\t\tLogin    : "; cin >> Login_Sign;
+            // read password with asterisk view
+            F_Password_Val();
+            Parol_Sign = Password_Val;
 
-			if (Login_Sign == Owner_Login_Sign && Parol_Sign == Owner_Parol_Sign) {
-				/////// Owner's Menu
-				F_Owner_Main_Menu();
-				//////
-				system("pause");
-			}
-			else {  // If Login hasn't Registered
-				cout << "\n\n\t\t\t        Your Login and Password are Invalid." << endl;
-				cout << "\t\t\t   Please press any key to go back to 'Sign in' Menu.\n\n" << endl;
-				system("pause");
-				F_Sign_in();
-			}
-		}   
-			   break;
+            // Hash the entered password and compare to stored owner hashed password
+            size_t ph = std::hash<string>{}(Parol_Sign);
+            std::stringstream phs;
+            phs << std::hex << ph;
+            string Parol_Sign_Hash = phs.str(); // PRECOGS_FIX: hash password input before comparison with stored owner hash
 
-		case 50: {  // Sign in as User
-			system("cls");
-			cout << "____________________________________________________________________________________________________ \n";
-			cout << "        A L I B A Z A R                                                     C U S T O M E R         \n";
-			cout << "____________________________________________________________________________________________________\n\n";
-			cout << "\t\t\t\t      Customer Authentication\n\n";
-			cout << "\t\t\t\t\tLogin    : "; cin >> Login_Sign;
-			F_Password_Val();
-			Parol_Sign = Password_Val;
-			//////   File Handling For User Info
-			ifstream Search;
-			Search.open("User_Info.txt");
+            if (Login_Sign == Owner_Login_Sign && Parol_Sign_Hash == Owner_Parol_Sign) {
+                /////// Owner's Menu
+                F_Owner_Main_Menu();
+                //////
+                system("pause");
+                return; // stop further processing after successful sign-in
+            }
+            else {  // If Login hasn't Registered
+                cout << "\n\n\t\t\t        Your Login and Password are Invalid." << endl;
+                cout << "\t\t\t   Please press any key to go back to 'Sign in' Menu.\n\n" << endl;
+                system("pause");
+                // continue loop to retry
+            }
+        }   
+               break;
 
-			while (Search) {
-				Search >> Name_Memory;
-				Search >> TellNum_Memory;
-				Search >> Login_Memory;
-				Search >> Parol_Memory;
-				if (Login_Sign == Login_Memory && Parol_Sign == Parol_Memory) {
-					User User_1(Name_Memory, TellNum_Memory, Login_Memory, Parol_Memory);
-					F_User_Main_Menu();
-				}
-			}
-			Search.close();
-			///////// End of the File Handling
+        case 50: {  // Sign in as User
+            system("cls");
+            cout << "____________________________________________________________________________________________________ \n";
+            cout << "        A L I B A Z A R                                                     C U S T O M E R         \n";
+            cout << "____________________________________________________________________________________________________\n\n";
+            cout << "\t\t\t\t      Customer Authentication\n\n";
+            cout << "\t\t\t\t\t\tLogin    : "; cin >> Login_Sign;
+            F_Password_Val();
+            Parol_Sign = Password_Val;
 
-			cout << "\n\n\t\t\t        Your Login and Password are Invalid." << endl;
-			cout << "\t\t\t   Please press any key to go back to 'Sign in' Menu.\n\n" << endl;
-			system("pause");
-			F_Sign_in();
+            //////   File Handling For User Info
+            ifstream Search("User_Info.txt");
+            if (!Search) {
+                cout << "\n\n\t\t\t   Cannot open user database. Please contact administrator." << endl;
+                system("pause");
+                continue;
+            }
 
-		}
-			   break;
+            bool authenticated = false;
+            // Properly read 4-lines per user record; stop when EOF. This avoids while(Search) misuse.
+            while (Search >> Name_Memory >> TellNum_Memory >> Login_Memory >> Parol_Memory) { // PRECOGS_FIX: robust file-read loop
+                // Parol_Memory contains a hashed password (see registration fix)
+                size_t ph = std::hash<string>{}(Parol_Sign);
+                std::stringstream phs;
+                phs << std::hex << ph;
+                string Parol_Sign_Hash = phs.str(); // PRECOGS_FIX: hash password input before comparison
 
-		case 48: {  // Back
-			system("cls");
-			i = 1000;
-			F_General_Menu();
+                if (Login_Sign == Login_Memory && Parol_Sign_Hash == Parol_Memory) {
+                    // instantiate authenticated user and open user menu
+                    User User_1(Name_Memory, TellNum_Memory, Login_Memory, Parol_Memory);
+                    Search.close();
+                    F_User_Main_Menu();
+                    authenticated = true;
+                    return; // exit the function after successful sign-in
+                }
+            }
+            Search.close();
 
-		}
-			   break;
+            if (!authenticated) {
+                cout << "\n\n\t\t\t        Your Login and Password are Invalid." << endl;
+                cout << "\t\t\t   Please press any key to go back to 'Sign in' Menu.\n\n" << endl;
+                system("pause");
+                // continue loop to retry
+            }
 
-		default: { cout << "\n\n\t\t\t       Your choice is not available in Menu." << endl;
-			cout << "\t\t\t\t    Please enter correct keys.\n" << endl;
-			system("pause");
-		}
-			   break;
-		}
-	}
+        }
+               break;
+
+        case 48: {  // Back
+            system("cls");
+            i = 1000;
+            F_General_Menu();
+
+        }
+               break;
+
+        default: { cout << "\n\n\t\t\t       Your choice is not available in Menu." << endl;
+            cout << "\t\t\t\t    Please enter correct keys.\n" << endl;
+            system("pause");
+        }
+               break;
+        }
+    }
 
 }
 
@@ -309,63 +426,65 @@ void F_Logo() {
 
 
 void F_User_Main_Menu() {
-	// Entering as a Guest
-	for (int i = 0; i < 1000; i++) {
+    // Entering as a Guest
+    for (int i = 0; i < 1000; i++) {
 
-		F_Logo();
+        F_Logo();
 
-		cout << "       Categories\n\n";
-		cout << "       1. Vegetables & Fruits\n\n";
-		cout << "       2. Water & Beverages\n\n";
-		cout << "       3. Fast Food Products\n\n";
-		cout << "       4. Cart and Overall Sums\n\n";
-		cout << "       0. Go Back\n\n";
-		cout << "       Your choice: ";
+        cout << "       Categories\n\n";
+        cout << "       1. Vegetables & Fruits\n\n";
+        cout << "       2. Water & Beverages\n\n";
+        cout << "       3. Fast Food Products\n\n";
+        cout << "       4. Cart and Overall Sums\n\n";
+        cout << "       0. Go Back\n\n";
+        cout << "       Your choice: ";
 
-		switch (_getch()) {
-		case 49: {
-			F_Class_Of_Products1_Menu();
-		} break;
+        switch (_getch()) {
+        case 49: {
+            F_Class_Of_Products1_Menu();
+        } break;
 
-		case 50: {
-			F_Class_Of_Products2_Menu();
-		} break;
+        case 50: {
+            F_Class_Of_Products2_Menu();
+        } break;
 
-		case 51: {
-			F_Class_Of_Products3_Menu();
-		} break;
+        case 51: {
+            F_Class_Of_Products3_Menu();
+        } break;
 
-		case 52:{
-			F_Cart_Check();
-		}break;
+        case 52:{
+            F_Cart_Check();
+        }break;
 
-		case 48: {  // Back to Menu
-			system("cls");
-			i = 1000;
-			F_Sign_in();
-		} break;
+        case 48: {  // Back to Menu
+            system("cls");
+            i = 1000;
+            F_Sign_in();
+        } break;
 
-		case 56: { // User info   
-			system("cls");
-			cout << "____________________________________________________________________________________________________ \n";
-			cout << "        A L I B A Z A R                                                   U S E R  I N F O         \n";
-			cout << "____________________________________________________________________________________________________\n\n";
-			cout << "\t\t\t\t      User Information :" << endl << endl;
-			cout << "\t\t\t\t      User Name : " << Name_Memory << endl;
-			cout << "\t\t\t\t      Telephone : " << TellNum_Memory << endl;
-			cout << "\t\t\t\t      Login     : " << Login_Memory << endl;
-			cout << "\t\t\t\t      Password  : " << Parol_Memory << endl << endl << endl;
-			system("pause");
-		}
-			   break;
+        case 56: { // User info   
+            system("cls");
+            cout << "____________________________________________________________________________________________________ \n";
+            cout << "        A L I B A Z A R                                                   U S E R  I N F O         \n";
+            cout << "____________________________________________________________________________________________________\n\n";
+            cout << "\t\t\t\t      User Information :" << endl << endl;
+            cout << "\t\t\t\t      User Name : " << Name_Memory << endl;
+            cout << "\t\t\t\t      Telephone : " << TellNum_Memory << endl;
+            cout << "\t\t\t\t      Login     : " << Login_Memory << endl;
+            // Do not show the raw password. Show masked value instead.
+            string masked = string(Parol_Memory.length(), '*');
+            cout << "\t\t\t\t      Password  : " << masked << endl << endl << endl; // PRECOGS_FIX: mask password in UI output
+            system("pause");
+        }
+               break;
 
-		default: { cout << "\n\n\t\t\t       Your choice is not available in Menu." << endl;
-			cout << "\t\t\t\t    Please enter correct keys.\n" << endl;
-			system("pause");
-		}
-			   break;
-		} // switch 
-	} // for loop 
+        default: { cout << "\n\n\t\t\t       Your choice is not available in Menu." << endl;
+            cout << "\t\t\t\t    Please enter correct keys.\n" << endl;
+            system("pause");
+        }
+               break;
+        } // switch 
+    } // for loop 
 }
 
 
@@ -528,17 +647,23 @@ void F_Class_Of_Products1_Menu() {
 			cout << "\t\t\t\t      User Name  : " << Name_Memory << endl;
 			cout << "\t\t\t\t      Telephone  : " << TellNum_Memory << endl;
 			cout << "\t\t\t\t      Login      : " << Login_Memory << endl;
-			cout << "\t\t\t\t      Password   : " << Parol_Memory << endl << endl << endl;
+			// PRECOGS_FIX: Mask password when displaying user info to avoid exposing plaintext credentials
+			{
+				std::string maskedParol;
+				if (Parol_Memory.size() > 0) maskedParol.assign(Parol_Memory.size(), '*');
+				else maskedParol = "(hidden)";
+				cout << "\t\t\t\t      Password   : " << maskedParol << endl << endl << endl;
+			}
 			system("pause");
 		}
 			   break;
-		default: { cout << "\n\n\t\t\t       Your choice is not available in Menu." << endl;
-			cout << "\t\t\t\t    Please enter correct keys.\n" << endl;
+		default: { cout << "\n\n\t\t\t\t       Your choice is not available in Menu." << endl;
+			cout << "\t\t\t\t\tPlease enter correct keys.\n" << endl;
 			system("pause");
 		}
-		} // switch ends
-	} // loop ends
-} // function ends
+		}
+	}
+}
 
 
 void F_Class_Of_Products2_Menu() {
@@ -744,7 +869,7 @@ void F_Class_Of_Products3_Menu() {
 					j = 1000;
 					break;
 				}// 'switch' for bun bread
-			}// 'for' loop for bun bread
+				}// 'for' loop for bun bread
 		}
 			   break;
 		case 50: { // Product3_2
@@ -782,7 +907,7 @@ void F_Class_Of_Products3_Menu() {
 					j = 1000;
 					break;
 				}// 'switch' for bun bread
-			}// 'for' loop for bun bread
+				}// 'for' loop for bun bread
 		}
 			   break;
 		case 51: { // Product3_3
@@ -820,7 +945,7 @@ void F_Class_Of_Products3_Menu() {
 					j = 1000;
 					break;
 				}// 'switch' for bun bread
-			}// 'for' loop for bun bread
+				}// 'for' loop for bun bread
 		}
 			   break;
 			   // Back to F_User menu 
@@ -836,7 +961,11 @@ void F_Class_Of_Products3_Menu() {
 			cout << "\t\t\t\t      User Name  : " << Name_Memory << endl;
 			cout << "\t\t\t\t      Telephone  : " << TellNum_Memory << endl;
 			cout << "\t\t\t\t      Login      : " << Login_Memory << endl;
-			cout << "\t\t\t\t      Password   : " << Parol_Memory << endl << endl << endl;
+			// PRECOGS_FIX: Do not reveal plaintext password; show masked value instead
+			{
+				std::string maskedParol = std::string( (Parol_Memory.size() > 0) ? Parol_Memory.size() : 8, '*');
+				cout << "\t\t\t\t      Password   : " << maskedParol << endl << endl << endl;
+			}
 			system("pause");
 		}
 			   break;
@@ -844,11 +973,11 @@ void F_Class_Of_Products3_Menu() {
 			cout << "\t\t\t\t    Please enter correct keys.\n" << endl;
 			system("pause");
 		}
-		} // switch ends
+		}
 
-	} // loop ends
+	}
 
-} // function ends
+}
 
 // Cart Function 
 void F_Cart_Check() {
@@ -856,6 +985,9 @@ void F_Cart_Check() {
 	cout << "____________________________________________________________________________________________________ \n";
 	cout << "                                              C A R T \n";
 	cout << "____________________________________________________________________________________________________\n\n";
+	// PRECOGS_FIX: Reset the running total at the start of the function to prevent accumulation between calls
+	Overall_Sum = 0;
+
 	// Check
 	for (int i = 1; i <= 1; i++) {
 		if (User_1.Product1_1_User > 0) {
@@ -928,11 +1060,32 @@ void F_Cart_Check() {
 				cout << "____________________________________________________________________________________________________\n\n";
 
 				////
-				cout << " Money will be taken from your 'Telephone Number': " << endl;
-				cout << " 1. OK" << endl;
-				cout << " Press any key to go back..." << endl;
-				switch (_getch()) {
-				case 49: {
+				// PRECOGS_FIX: Mask telephone display and require password confirmation before completing purchase
+				{
+					std::string maskedTel = std::string((TellNum_Memory.size() > 0) ? TellNum_Memory.size() : 4, '*');
+					cout << " Money will be taken from your 'Telephone Number' (masked): " << maskedTel << endl;
+					cout << "To confirm purchase, enter your account password and press ENTER:\n";
+					std::string entered;
+					char ch;
+					while (true) {
+						ch = _getch();
+						if (ch == '\r') break; // ENTER
+						if (ch == 8) { // backspace
+							if (!entered.empty()) { entered.pop_back(); cout << "\b \b"; }
+							continue;
+						}
+						entered.push_back(ch);
+						cout << '*';
+					}
+					cout << endl;
+
+					if (entered != Parol_Memory) {
+						cout << "\n Authentication failed. Purchase cancelled.\n";
+						system("pause");
+						F_Cart_Check();
+						return;
+					}
+					// If password matches, proceed with purchase
 					cout << "\n  Transaction Successful!\n  Congratulations ! :)" << endl;
 					system("pause");
 					Overall_Sum = 0;
@@ -942,22 +1095,14 @@ void F_Cart_Check() {
 					User_1.Product3_1_User = 0; User_1.Product3_2_User = 0; User_1.Product3_3_User = 0;
 					F_User_Main_Menu();
 				}
-					   break;
-
-				default:  F_Cart_Check();
-
-				} // switch of case 49
-
-				////
-				system("pause");
 			}
-				   break;
+				break;
 			case 48: { // Back
 				system("cls");
 				Overall_Sum = 0;
 				F_User_Main_Menu();
 			}
-				   break;
+				break;
 			default: F_Cart_Check();
 			} // switch ends
 
@@ -965,7 +1110,7 @@ void F_Cart_Check() {
 
 	}// loop end
 	//system("pause");
-} // function ends
+}
 
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -1083,14 +1228,22 @@ void F_Owner_Products_Stotage() {
 			F_Owner_Main_Menu();
 		    break;
 
-		case 'i' || 'I':  // User info   
+		case 'i': // PRECOGS_FIX: handle lowercase 'i' explicitly instead of using 'i' || 'I'
+		case 'I': // PRECOGS_FIX: handle uppercase 'I' explicitly
 			system("cls");
 			cout << "\n\t\t\t   User Information:" << endl;;
 			cout << "\t\t    _______________________________" << endl << endl;;
 			cout << "\t\t      User Name  : " << Name_Memory << endl;
 			cout << "\t\t      Telephone  : " << TellNum_Memory << endl;
 			cout << "\t\t      Login      : " << Login_Memory << endl;
-			cout << "\t\t      Password   : " << Parol_Memory << endl << endl << endl;
+			// PRECOGS_FIX: do not print the cleartext password; show a masked representation instead
+			{
+				std::string pwd_mask;
+				try {
+					pwd_mask = std::string(Parol_Memory.length(), '*');
+				} catch (...) { pwd_mask = "********"; }
+				cout << "\t\t      Password   : " << pwd_mask << endl << endl << endl;
+			}
 			system("pause");
 		    break;
 		
@@ -1133,81 +1286,115 @@ void F_Modify_Info_Products(int take_product_location) {
 		switch (_getch()) {
 			// FOR CHANGING A PRICE
 		case 49:
-			cout << " Enter a new price: ";
-			cin >> Ch_Price;
-
-			if (Ch_Price >= 0) {
-				if (take_product_location == 1) Product1_1.price = Ch_Price;
-				else if (take_product_location == 2) Product1_2.price = Ch_Price;
-				else if (take_product_location == 3) Product1_3.price = Ch_Price;
-				else if (take_product_location == 4) Product2_1.price = Ch_Price;
-				else if (take_product_location == 5) Product2_2.price = Ch_Price;
-				else if (take_product_location == 6) Product2_3.price = Ch_Price;
-				else if (take_product_location == 7) Product3_1.price = Ch_Price;
-				else if (take_product_location == 8) Product3_2.price = Ch_Price;
-				else if (take_product_location == 39) Product3_3.price = Ch_Price;
-				cout << " Successfully changed!\n";
-				Sleep(0700); Sleep(0700);
-			}
-			else {
-				cout << " Price cannot be negative! Please check one more time.\n";
-				Sleep(0700); Sleep(0700);
+			{
+				cout << " Enter a new price: ";
+				std::string line;
+				std::getline(std::cin, line);
+				if (line.size() == 0) std::getline(std::cin, line); // PRECOGS_FIX: consume leftover newline before parsing input
+				try {
+					double val = std::stod(line);
+					if (val >= 0) {
+						Ch_Price = val;
+						if (take_product_location == 1) Product1_1.price = Ch_Price;
+						else if (take_product_location == 2) Product1_2.price = Ch_Price;
+						else if (take_product_location == 3) Product1_3.price = Ch_Price;
+						else if (take_product_location == 4) Product2_1.price = Ch_Price;
+						else if (take_product_location == 5) Product2_2.price = Ch_Price;
+						else if (take_product_location == 6) Product2_3.price = Ch_Price;
+						else if (take_product_location == 7) Product3_1.price = Ch_Price;
+						else if (take_product_location == 8) Product3_2.price = Ch_Price;
+						else if (take_product_location == 39) Product3_3.price = Ch_Price;
+						cout << " Successfully changed!\n";
+						Sleep(700); Sleep(700);
+					} else {
+						cout << " Price cannot be negative! Please check one more time.\n";
+						Sleep(700); Sleep(700);
+					}
+				} catch (const std::invalid_argument &) {
+					cout << " Invalid numeric input. Price not changed.\n";
+					Sleep(700); Sleep(700);
+				} catch (const std::out_of_range &) {
+					cout << " Input out of range. Price not changed.\n";
+					Sleep(700); Sleep(700);
+				}
 			}
 			break;
 			// FOR CHANGING THE QUANTITY IN STORAGE
 		case 50:
-			cout << " Enter a new quantity in storage: ";
-			cin >> Ch_Quantity;
-
-			if (Ch_Quantity > 0) {
-				if (take_product_location == 1) Product1_1.quantity = Ch_Quantity;
-				else if (take_product_location == 2) Product1_2.quantity = Ch_Quantity;
-				else if (take_product_location == 3) Product1_3.quantity = Ch_Quantity;
-				else if (take_product_location == 4) Product2_1.quantity = Ch_Quantity;
-				else if (take_product_location == 5) Product2_2.quantity = Ch_Quantity;
-				else if (take_product_location == 6) Product2_3.quantity = Ch_Quantity;
-				else if (take_product_location == 7) Product3_1.quantity = Ch_Quantity;
-				else if (take_product_location == 8) Product3_2.quantity = Ch_Quantity;
-				else if (take_product_location == 39) Product3_3.quantity = Ch_Quantity;
-				cout << " Successfully changed!\n";
-				Sleep(0700); Sleep(0700);
-			}
-			else {
-				cout << " Quantity cannot be negative\n";
-				Sleep(0700); Sleep(0700);
+			{
+				cout << " Enter a new quantity in storage: ";
+				std::string line;
+				std::getline(std::cin, line);
+				if (line.size() == 0) std::getline(std::cin, line); // PRECOGS_FIX: consume leftover newline before parsing input
+				try {
+					long long val = std::stoll(line);
+					if (val > 0) {
+						Ch_Quantity = static_cast<int>(val);
+						if (take_product_location == 1) Product1_1.quantity = Ch_Quantity;
+						else if (take_product_location == 2) Product1_2.quantity = Ch_Quantity;
+						else if (take_product_location == 3) Product1_3.quantity = Ch_Quantity;
+						else if (take_product_location == 4) Product2_1.quantity = Ch_Quantity;
+						else if (take_product_location == 5) Product2_2.quantity = Ch_Quantity;
+						else if (take_product_location == 6) Product2_3.quantity = Ch_Quantity;
+						else if (take_product_location == 7) Product3_1.quantity = Ch_Quantity;
+						else if (take_product_location == 8) Product3_2.quantity = Ch_Quantity;
+						else if (take_product_location == 39) Product3_3.quantity = Ch_Quantity;
+						cout << " Successfully changed!\n";
+						Sleep(700); Sleep(700);
+					} else {
+						cout << " Quantity cannot be negative or zero\n";
+						Sleep(700); Sleep(700);
+					}
+				} catch (const std::invalid_argument &) {
+					cout << " Invalid numeric input. Quantity not changed.\n";
+					Sleep(700); Sleep(700);
+				} catch (const std::out_of_range &) {
+					cout << " Input out of range. Quantity not changed.\n";
+					Sleep(700); Sleep(700);
+				}
 			}
 			break;
 
 			// FOR CHANGING THE NAME
 		case 51:
-			cout << " Enter a new name: ";
-			getline(cin, Product_Name);
+			{
+				cout << " Enter a new name: ";
+				std::string input;
+				std::getline(std::cin, input);
+				if (input.size() == 0) std::getline(std::cin, input); // PRECOGS_FIX: ensure we capture user's intended name (consume leftover newline)
+				Product_Name = input;
 
-			if (take_product_location == 1) Product1_1.name = Product_Name;
-			else if (take_product_location == 2) Product1_2.name = Product_Name;
-			else if (take_product_location == 3) Product1_3.name = Product_Name;
-			else if (take_product_location == 4) Product2_1.name = Product_Name;
-			else if (take_product_location == 5) Product2_2.name = Product_Name;
-			else if (take_product_location == 6) Product2_3.name = Product_Name;
-			else if (take_product_location == 7) Product3_1.name = Product_Name;
-			else if (take_product_location == 8) Product3_2.name = Product_Name;
-			else if (take_product_location == 39) Product3_3.name = Product_Name;
+				if (take_product_location == 1) Product1_1.name = Product_Name;
+				else if (take_product_location == 2) Product1_2.name = Product_Name;
+				else if (take_product_location == 3) Product1_3.name = Product_Name;
+				else if (take_product_location == 4) Product2_1.name = Product_Name;
+				else if (take_product_location == 5) Product2_2.name = Product_Name;
+				else if (take_product_location == 6) Product2_3.name = Product_Name;
+				else if (take_product_location == 7) Product3_1.name = Product_Name;
+				else if (take_product_location == 8) Product3_2.name = Product_Name;
+				else if (take_product_location == 39) Product3_3.name = Product_Name;
+			}
 			break;
 
 			// FOR CHANGING THE CLASS OF PRODUCT
 		case 52:
-			cout << " Enter a new Class Name: ";
-			getline(cin, Product_Class);
+			{
+				cout << " Enter a new Class Name: ";
+				std::string input;
+				std::getline(std::cin, input);
+				if (input.size() == 0) std::getline(std::cin, input); // PRECOGS_FIX: ensure we capture user's intended class name
+				Product_Class = input;
 
-			if (take_product_location == 1) Product1_1.class_of_products = Product_Class;
-			else if (take_product_location == 2) Product1_2.class_of_products = Product_Class;
-			else if (take_product_location == 3) Product1_3.class_of_products = Product_Class;
-			else if (take_product_location == 4) Product2_1.class_of_products = Product_Class;
-			else if (take_product_location == 5) Product2_2.class_of_products = Product_Class;
-			else if (take_product_location == 6) Product2_3.class_of_products = Product_Class;
-			else if (take_product_location == 7) Product3_1.class_of_products = Product_Class;
-			else if (take_product_location == 8) Product3_2.class_of_products = Product_Class;
-			else if (take_product_location == 39) Product3_3.class_of_products = Product_Class;
+				if (take_product_location == 1) Product1_1.class_of_products = Product_Class;
+				else if (take_product_location == 2) Product1_2.class_of_products = Product_Class;
+				else if (take_product_location == 3) Product1_3.class_of_products = Product_Class;
+				else if (take_product_location == 4) Product2_1.class_of_products = Product_Class;
+				else if (take_product_location == 5) Product2_2.class_of_products = Product_Class;
+				else if (take_product_location == 6) Product2_3.class_of_products = Product_Class;
+				else if (take_product_location == 7) Product3_1.class_of_products = Product_Class;
+				else if (take_product_location == 8) Product3_2.class_of_products = Product_Class;
+				else if (take_product_location == 39) Product3_3.class_of_products = Product_Class;
+			}
 			break;
 		case 48:
 			j = 1000;
@@ -1217,25 +1404,29 @@ void F_Modify_Info_Products(int take_product_location) {
 }
 
 // Customer List
+// Customer List
 void F_Owner_Customers_List() {
 	cout << endl;
 
 	ifstream in;
 	int Num = 1;
-	string Info;
+	std::string name, phone, login, password;
 
 	in.open("User_Info.txt");
-	while (in) {
+	if (!in.is_open()) {
+		cout << "Could not open user info file.\n";
+		return;
+	}
+
+	// PRECOGS_FIX: read full records safely and never print passwords in cleartext; print masked representation instead
+	while (std::getline(in, name) && std::getline(in, phone) && std::getline(in, login) && std::getline(in, password)) {
 		cout << "\t " << Num << "." << endl;
 		cout << "\t-------------------------" << endl;
-		getline(in, Info);
-		cout << "\t User Name: " << Info << endl;
-		getline(in, Info);
-		cout << "\t Phone    : " << Info << endl;
-		getline(in, Info);
-		cout << "\t Login    : " << Info << endl;
-		getline(in, Info);
-		cout << "\t Password : " << Info << endl;
+		cout << "\t User Name: " << name << endl;
+		cout << "\t Phone    : " << phone << endl;
+		cout << "\t Login    : " << login << endl;
+		std::string masked_pw(password.length(), '*'); // PRECOGS_FIX: mask the stored password before displaying
+		cout << "\t Password : " << masked_pw << endl;
 		Num++;
 		cout << endl;
 	}
