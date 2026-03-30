@@ -96,46 +96,73 @@ void F_Developers() {
 }
 
 void F_Quit() {
-	window.clear(sf::Color::White);
-	window.draw(Quit);
-	window.display();
+    // Use an event-driven loop and avoid calling system() to close the window safely
+    while (window.isOpen()) {
+        window.clear(sf::Color::White);
+        window.draw(Quit);
+        window.display();
 
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Numpad2)) {
-		//sound_Rington.play(); 
-		F_MainMenu();
-	}
-	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Numpad1))
-	{
-		//sound_Rington.play();
-		system("pause");
-		window.close();
-	}
-	else { F_Quit(); }
+        // Process events and keyboard input to avoid recursion and use of system()
+        sf::Event ev;
+        bool back = false;
+        bool doClose = false;
+        while (window.pollEvent(ev)) {
+            if (ev.type == sf::Event::Closed) { window.close(); return; }
+            if (ev.type == sf::Event::KeyPressed) {
+                if (ev.key.code == sf::Keyboard::Numpad2) { back = true; break; }
+                if (ev.key.code == sf::Keyboard::Numpad1) { doClose = true; break; }
+            }
+        }
+
+        if (back) {
+            // PRECOGS_FIX: return to caller so the caller (main loop) can present the main menu; avoids recursive call
+            return;
+        }
+
+        if (doClose) {
+            // PRECOGS_FIX: remove system("pause"); directly close window in a controlled manner
+            window.close();
+            return;
+        }
+
+        Sleep(50);
+    }
 }
 
 
 void F_Start() {
+    // Convert recursive flow into an iterative event-driven loop to avoid unbounded recursion
+    while (window.isOpen()) {
+        // Render/update the map each iteration
+        F_Map();
 
-	F_Map();
-	if ((x % 2 == 0) && sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Space)) {
-		//sound_Rington.play();
-		window.clear();
-		window.display();
-		Sleep(0700); Sleep(0700); Sleep(0700);
-		x++;
-		F_Logic();
-		F_Start();
-	}
-	else if (x % 2 == 1) {
-		//sound_Rington.play();
-		window.clear();
-		window.display();
-		Sleep(0700); Sleep(0700); Sleep(0700);
-		x++;
-		F_Logic();
-		F_Start();
-	}
-	else F_Start();
+        // Process events so window remains responsive
+        sf::Event ev;
+        while (window.pollEvent(ev)) {
+            if (ev.type == sf::Event::Closed) { window.close(); return; }
+        }
+
+        // Check player action conditions and handle them iteratively
+        if ((x % 2 == 0) && sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Space)) {
+            window.clear();
+            window.display();
+            Sleep(700); Sleep(700); Sleep(700);
+            x++;
+            F_Logic();
+            // continue loop instead of recursive call
+            continue;
+        } else if (x % 2 == 1 && sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Space)) {
+            window.clear();
+            window.display();
+            Sleep(700); Sleep(700); Sleep(700);
+            x++;
+            F_Logic();
+            continue;
+        }
+
+        // If no action, sleep briefly to avoid busy-looping
+        Sleep(50);
+    }
 }
 
 
@@ -155,45 +182,42 @@ void F_Loading() {
 //main part
 int main()
 {
-	k = 0;
-	//Identifiers Picture 
-	sf::Texture TextMainMenu; TextMainMenu.loadFromFile("Main_Menu.jpg"); MainMenu.setTexture(&TextMainMenu);
-	sf::Texture TextHelp; TextHelp.loadFromFile("Help.jpg"); Help.setTexture(&TextHelp);
-	sf::Texture TextDevelopers; TextDevelopers.loadFromFile("Developers.jpg"); Developers.setTexture(&TextDevelopers);
-	sf::Texture TextQuit; TextQuit.loadFromFile("Quit_Main.jpg"); Quit.setTexture(&TextQuit);
-	sf::Texture TextLoading1; TextLoading1.loadFromFile("Loading1.jpg"); Loading_1.setTexture(&TextLoading1);
-	sf::Texture TextLoading2; TextLoading2.loadFromFile("Loading2.jpg"); Loading_2.setTexture(&TextLoading2);
-	sf::Texture TextLoading3; TextLoading3.loadFromFile("Loading3.jpg"); Loading_3.setTexture(&TextLoading3);
-	sf::Texture TextMap; TextMap.loadFromFile("Map.png"); Map.setTexture(&TextMap);
-	sf::Texture TextPlayer_1; TextPlayer_1.loadFromFile("Player.png"); Player.setTexture(&TextPlayer_1);
+    k = 0;
+    // PRECOGS_FIX: check return values from loadFromFile and abort early on failure with a clear error
+    sf::Texture TextMainMenu; if (!TextMainMenu.loadFromFile("Main_Menu.jpg")) { std::cerr << "ERROR: Failed to load Main_Menu.jpg\n"; return 1; } MainMenu.setTexture(&TextMainMenu);
+    sf::Texture TextHelp; if (!TextHelp.loadFromFile("Help.jpg")) { std::cerr << "ERROR: Failed to load Help.jpg\n"; return 1; } Help.setTexture(&TextHelp);
+    sf::Texture TextDevelopers; if (!TextDevelopers.loadFromFile("Developers.jpg")) { std::cerr << "ERROR: Failed to load Developers.jpg\n"; return 1; } Developers.setTexture(&TextDevelopers);
+    sf::Texture TextQuit; if (!TextQuit.loadFromFile("Quit_Main.jpg")) { std::cerr << "ERROR: Failed to load Quit_Main.jpg\n"; return 1; } Quit.setTexture(&TextQuit);
+    sf::Texture TextLoading1; if (!TextLoading1.loadFromFile("Loading1.jpg")) { std::cerr << "ERROR: Failed to load Loading1.jpg\n"; return 1; } Loading_1.setTexture(&TextLoading1);
+    sf::Texture TextLoading2; if (!TextLoading2.loadFromFile("Loading2.jpg")) { std::cerr << "ERROR: Failed to load Loading2.jpg\n"; return 1; } Loading_2.setTexture(&TextLoading2);
+    sf::Texture TextLoading3; if (!TextLoading3.loadFromFile("Loading3.jpg")) { std::cerr << "ERROR: Failed to load Loading3.jpg\n"; return 1; } Loading_3.setTexture(&TextLoading3);
+    sf::Texture TextMap; if (!TextMap.loadFromFile("Map.png")) { std::cerr << "ERROR: Failed to load Map.png\n"; return 1; } Map.setTexture(&TextMap);
+    sf::Texture TextPlayer_1; if (!TextPlayer_1.loadFromFile("Player.png")) { std::cerr << "ERROR: Failed to load Player.png\n"; return 1; } Player.setTexture(&TextPlayer_1);
 
-	// Musics 
-	//if (!Rington.loadFromFile("Rington.wav")) { cout << "ERROR" << endl; } sound_Rington.setBuffer(Rington);
-	//if (!BackMusic.loadFromFile("BackMusic.wav")) { cout << "ERROR" << endl; } sound_BackMusic.setBuffer(BackMusic);
+    // Musics 
+    //if (!Rington.loadFromFile("Rington.wav")) { cout << "ERROR" << endl; } sound_Rington.setBuffer(Rington);
+    //if (!BackMusic.loadFromFile("BackMusic.wav")) { cout << "ERROR" << endl; } sound_BackMusic.setBuffer(BackMusic);
 
-	//Starting point
-	while (window.isOpen())
-	{
+    //Starting point
+    while (window.isOpen())
+    {
+        sf::Event evnt;
+        while (window.pollEvent(evnt))
+        {
+            switch (evnt.type) {
+            case sf::Event::Closed: window.close();
+                break;
+            case sf::Event::Resized:;
+                break;
+            }
+        }
 
-		sf::Event evnt;
-		while (window.pollEvent(evnt))
-		{
-			switch (evnt.type) {
-			case sf::Event::Closed: window.close();
-				break;
-			case sf::Event::Resized:;
-				break;
-			}
-		}
-		//Others
+        // Outputs
+        if (k == 0) {// sound_BackMusic.play();
+        F_Loading(); k++; }
+        //k = 1;
+        if (k == 1) { F_MainMenu(); }
+    }
 
-
-		// Outputs
-		if (k == 0) {// sound_BackMusic.play();
-		F_Loading(); k++; }
-		//k = 1;
-		if (k == 1) { F_MainMenu(); }
-	}
-
-	return 0;
+    return 0;
 }

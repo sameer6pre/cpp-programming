@@ -464,25 +464,40 @@ void text_2020()
 void work_pushX()
 {
 	int j = 0;
+	// Local helper: clear the console using Win32 API instead of system("cls")
+	auto clearConsole = []() {
+		HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+		if (hConsole == INVALID_HANDLE_VALUE) return;
+		CONSOLE_SCREEN_BUFFER_INFO csbi;
+		if (!GetConsoleScreenBufferInfo(hConsole, &csbi)) return;
+		DWORD cellCount = (DWORD)(csbi.dwSize.X * csbi.dwSize.Y);
+		COORD homeCoords = {0, 0};
+		DWORD count;
+		FillConsoleOutputCharacterA(hConsole, ' ', cellCount, homeCoords, &count);
+		FillConsoleOutputAttribute(hConsole, csbi.wAttributes, cellCount, homeCoords, &count);
+		SetConsoleCursorPosition(hConsole, homeCoords);
+	};
+
 	for (j = 0;j < 50;j++) {
-		system("cls");
+		// PRECOGS_FIX: replaced system("cls") with a Win32 Console API clear to avoid shell invocation
+		clearConsole();
 		cout << endl;
 		cout << endl;
 		pushX(j);
 		SetColor(15);
-		cout << ".:*~*:._.:*~*:._.:*~*:._.:*~*:._.:*~*:._.:*~*:._.:*~*:._.:*~*:._.:*~*:" << endl;
+		cout << ".:*~*:._.:*~*:._.:*~*:._.:*~*:._.:*~*:._.:*~*:._.:*~*:._.:*~*:._.:*~*:._:" << endl;
 		pushX(j);
 		SetColor(14);
 		cout << "            __,  ,__)            __,  ,__)      __, ,__)             " << endl;
 		pushX(j);
-		cout << "           (--|__| _ ,_ ,_      (--|\ | _       (--\ | _  _ ,_        " << endl;
+		cout << "           (--|__| _ ,_ ,_      (--|\ | _       (--\\ | _  _ ,_        " << endl;
 		pushX(j);
-		cout << "             _|  |(_||_)|_)(_|    _| \|(/_(_|_)     \|(/_(_||         " << endl;
+		cout << "             _|  |(_||_)|_)(_|    _| \\|(/_(_|_)     \\|(/_(_||         " << endl;
 		pushX(j);
 		cout << "            (        |  |  ,_|   (              (__|                  " << endl;
 		pushX(j);
 		SetColor(15);
-		cout << ".:*~*:._.:*~*:._.:*~*:._.:*~*:._.:*~*:._.:*~*:._.:*~*:._.:*~*:._.:*~*:" << endl;
+		cout << ".:*~*:._.:*~*:._.:*~*:._.:*~*:._.:*~*:._.:*~*:._.:*~*:._.:*~*:._.:*~*:._:" << endl;
 		text_2020();
 		cout << endl;
 		SetColor(11);
@@ -502,7 +517,7 @@ void work_pushX()
 		cout << "\t\t\t\t\t\t                 .     '      000      '    .     .        ." << endl;
 		cout << "\t\t\t\t\t\t           .          .   .   000     .        .       ." << endl;
 		cout << "\t\t\t\t\t\t      ............ ..........O000O.......... ..............." << endl;
-		Sleep(100);	
+		Sleep(100);
 	}
 }
 
