@@ -1,9 +1,3 @@
-// Lab assignment #5
-// ID:U1910049; Name:Zokirov Rustam
-// Control structure - Nested Loop
-
-#include <iostream>
-using namespace std;
 int main4()
 {
 	for (int i = 1; i <= 5; i++)
@@ -22,6 +16,9 @@ int main4()
 		}
 		cout << endl;
 	}
-	system("pause");
+	// PRECOGS_FIX: Replace unsafe system() invocation with a safe, portable wait for user input
+	cout << "Press Enter to continue...";
+	cout.flush();
+	std::cin.get();
 	return 0;
 }
