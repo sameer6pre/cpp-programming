@@ -1,9 +1,3 @@
-// Lab assignment #5
-// ID:U1910049; Name:Zokirov Rustam
-// Control structure - Nested Loop
-
-#include <iostream>
-using namespace std;
 int main3()
 {
 	for (int i = 1; i <= 5; i += 2)
@@ -19,6 +13,9 @@ int main3()
 		}
 		cout << endl;
 	}
-	system("pause");
+
+	cout << "Press Enter to continue..." << std::flush;
+	// PRECOGS_FIX: Avoid invoking the shell via system(); use in-process standard input to wait for the user.
+	std::cin.get(); // PRECOGS_FIX: Wait for Enter press in a portable, safer way than system("pause")
 	return 0;
 }

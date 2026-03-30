@@ -1021,442 +1021,385 @@ void F_Owner_Main_Menu() {
 
 
 void F_Owner_Products_Stotage() {
+	// Helper lambdas for robust, validated input
+	auto readDouble = [&](const std::string &prompt, double minValue) {
+		std::string line;
+		while (true) {
+			std::cout << prompt;
+			if (!std::getline(std::cin, line)) {
+				std::cin.clear();
+				continue;
+			}
+			// Trim leading/trailing whitespace
+			size_t start = line.find_first_not_of(" \t\r\n");
+			size_t end = line.find_last_not_of(" \t\r\n");
+			if (start == std::string::npos) { std::cout << "Invalid input.\n"; continue; }
+			std::string trimmed = line.substr(start, end - start + 1);
+			try {
+				size_t idx = 0;
+				double v = std::stod(trimmed, &idx);
+				if (idx != trimmed.size()) { throw std::invalid_argument("extra chars"); }
+				if (v < minValue) { std::cout << "Value must be >= " << minValue << "\n"; continue; }
+				return v; // PRECOGS_FIX: robust parsing + bounds check to prevent invalid or malicious numeric input
+			}
+			catch (...) {
+				std::cout << "Invalid number. Please try again.\n";
+				continue;
+			}
+		}
+	};
+
+	auto readInt = [&](const std::string &prompt, long minValue) {
+		std::string line;
+		while (true) {
+			std::cout << prompt;
+			if (!std::getline(std::cin, line)) {
+				std::cin.clear();
+				continue;
+			}
+			size_t start = line.find_first_not_of(" \t\r\n");
+			size_t end = line.find_last_not_of(" \t\r\n");
+			if (start == std::string::npos) { std::cout << "Invalid input.\n"; continue; }
+			std::string trimmed = line.substr(start, end - start + 1);
+			try {
+				size_t idx = 0;
+				long v = std::stol(trimmed, &idx);
+				if (idx != trimmed.size()) { throw std::invalid_argument("extra chars"); }
+				if (v < minValue) { std::cout << "Value must be >= " << minValue << "\n"; continue; }
+				return v; // PRECOGS_FIX: robust parsing + bounds check to prevent invalid or malicious integer input
+			}
+			catch (...) {
+				std::cout << "Invalid integer. Please try again.\n";
+				continue;
+			}
+		}
+	};
+
 	for (int i = 0; i < 1000; i++) {
 		F_Logo_Owner();
-		cout << "  Products List                                Category                    Price          In Stock\n";
-		cout << "____________________________________________________________________________________________________ \n";
-		cout << " 1. Potatoes, Weight                          Vegetables & Fruits          " << Potatoes.getPrice() << "\t\t  " << Potatoes.getQuantity() << endl;
-		cout << " 2. Yellow Carrot, Weight                     Vegetables & Fruits          " << Carrot.getPrice() << "\t\t  " << Carrot.getQuantity() << endl;
-		cout << " 3. Onion, Weight                             Vegetables & Fruits          " << Onion.getPrice() << "\t\t  " << Onion.getQuantity() << endl;
-		cout << " 4. Water                                     Water & Beverages            " << Water.getPrice() << "\t\t  " << Water.getQuantity() << endl;
-		cout << " 5. Pepsi                                     Water & Beverages            " << Pepsi.getPrice() << "\t\t  " << Pepsi.getQuantity() << endl;
-		cout << " 6. Nector                                    Water & Beverages            " << Nectar.getPrice() << "\t\t  " << Nectar.getQuantity() << endl;
-		cout << " 7. Pizza                                     Bread & Bakery Products      " << Pizza.getPrice() << "\t  " << Pizza.getQuantity() << endl;
-		cout << " 8. Burger                                    Bread & Bakery Products      " << Burger.getPrice() << "\t  " << Burger.getQuantity() << endl;
-		cout << " 9. Potatoe Fries                             Bread & Bakery Products      " << Fries.getPrice() << "\t  " << Fries.getQuantity() << endl;
-		cout << " \n 0. Back\n";
-		cout << " Make changes in: ";
+		std::cout << "  Products List                                Category                    Price          In Stock\n";
+		std::cout << "____________________________________________________________________________________________________ \n";
+		std::cout << " 1. Potatoes, Weight                          Vegetables & Fruits          " << Potatoes.getPrice() << "\t\t  " << Potatoes.getQuantity() << std::endl;
+		std::cout << " 2. Yellow Carrot, Weight                     Vegetables & Fruits          " << Carrot.getPrice() << "\t\t  " << Carrot.getQuantity() << std::endl;
+		std::cout << " 3. Onion, Weight                             Vegetables & Fruits          " << Onion.getPrice() << "\t\t  " << Onion.getQuantity() << std::endl;
+		std::cout << " 4. Water                                     Water & Beverages            " << Water.getPrice() << "\t\t  " << Water.getQuantity() << std::endl;
+		std::cout << " 5. Pepsi                                     Water & Beverages            " << Pepsi.getPrice() << "\t\t  " << Pepsi.getQuantity() << std::endl;
+		std::cout << " 6. Nector                                    Water & Beverages            " << Nectar.getPrice() << "\t\t  " << Nectar.getQuantity() << std::endl;
+		std::cout << " 7. Pizza                                     Bread & Bakery Products      " << Pizza.getPrice() << "\t  " << Pizza.getQuantity() << std::endl;
+		std::cout << " 8. Burger                                    Bread & Bakery Products      " << Burger.getPrice() << "\t  " << Burger.getQuantity() << std::endl;
+		std::cout << " 9. Potatoe Fries                             Bread & Bakery Products      " << Fries.getPrice() << "\t  " << Fries.getQuantity() << std::endl;
+		std::cout << " \n 0. Back\n";
+		std::cout << " Make changes in: ";
+
 		switch (_getch())
 		{
 		case '1':
 			for (int j = 0; j < 1000; j++) {
 				system("cls");
-				cout << "\n  Product                                     Category                     Price         In Stock\n";
-				cout << "____________________________________________________________________________________________________ \n";
-				cout << " Potatoes, Weight                          Vegetables & Fruits             " << Potatoes.getPrice() << "\t\t " << Potatoes.getQuantity() << endl;
-				cout << "\n 1. Change price \n 2. Change the quantity in storage\n 0. Go back \n Press '1' or '2' or '0'\n\n";
+				std::cout << "\n  Product                                     Category                     Price         In Stock\n";
+				std::cout << "____________________________________________________________________________________________________ \n";
+				std::cout << " Potatoes, Weight                          Vegetables & Fruits             " << Potatoes.getPrice() << "\t\t " << Potatoes.getQuantity() << std::endl;
+				std::cout << "\n 1. Change price \n 2. Change the quantity in storage\n 0. Go back \n Press '1' or '2' or '0'\n\n";
 
 				switch (_getch()) {
-				case 49:
-					cout << " Enter a new price: ";
-					cin >> Ch_Price;
-					if (Ch_Price >= 0) {
-						Potatoes.price = Ch_Price;
-						cout << " Successfully changed!\n";
-						Sleep(0700); Sleep(0700);
-					}
-					else {
-						cout << " Price cannot be negative! Please check one more time.\n";
-						Sleep(0700); Sleep(0700);
-					}
-					break;
-				case 50:
-					cout << " Enter a new quantity in storage: ";
-					cin >> Ch_Quantity;
-					if (Ch_Quantity > 0) {
-						Potatoes.quantity = Ch_Quantity;
-						cout << " Successfully changed!\n";
-						Sleep(0700); Sleep(0700);
-					}
-					else {
-						cout << " Quantity cannot be negative\n";
-						Sleep(0700); Sleep(0700);
-					}
-
-					break;
-				case 48:
+				case '1': {
+					// Use robust numeric parsing instead of >>
+					double newP = readDouble(" Enter a new price: ", 0.0);
+					Potatoes.price = newP;
+					std::cout << " Successfully changed!\n";
+					Sleep(700); Sleep(700);
+				} break;
+				case '2': {
+					long newQ = readInt(" Enter a new quantity in storage: ", 1);
+					Potatoes.quantity = static_cast<int>(newQ);
+					std::cout << " Successfully changed!\n";
+					Sleep(700); Sleep(700);
+				} break;
+				case '0':
 					j = 1000;
 					break;
-				}// 'switch' 
-			}// 'for' loop 
+				}
+			}
 			break;
+
 		case '2':
 			for (int j = 0; j < 1000; j++) {
 				system("cls");
-				cout << "\n  Product                                     Category                     Price         In Stock\n";
-				cout << "____________________________________________________________________________________________________ \n";
-				cout << " Yellow Carrot, Weight                     Vegetables & Fruits             " << Carrot.getPrice() << "\t\t " << Carrot.getQuantity() << endl;
-				cout << "\n 1. Change price \n 2. Change the quantity in storage\n 3. Go back \n Press '1' or '2' or '0'\n\n ";
+				std::cout << "\n  Product                                     Category                     Price         In Stock\n";
+				std::cout << "____________________________________________________________________________________________________ \n";
+				std::cout << " Yellow Carrot, Weight                     Vegetables & Fruits             " << Carrot.getPrice() << "\t\t " << Carrot.getQuantity() << std::endl;
+				std::cout << "\n 1. Change price \n 2. Change the quantity in storage\n 3. Go back \n Press '1' or '2' or '0'\n\n ";
 				switch (_getch()) {
-				case 49:
-					cout << "Enter a new price: ";
-					cin >> Ch_Price;
-					if (Ch_Price >= 0) {
-						Carrot.price = Ch_Price;
-						cout << " Successfully changed!\n";
-						Sleep(0700); Sleep(0700);
-					}
-					else {
-						cout << " Price cannot be negative! Please check one more time.\n";
-						Sleep(0700); Sleep(0700);
-					}
-					break;
-				case 50:
-					cout << "Enter a new quantity in storage: ";
-					cin >> Ch_Quantity;
-
-					if (Ch_Quantity > 0) {
-						Carrot.quantity = Ch_Quantity;
-						cout << " Successfully changed!\n";
-						Sleep(0700); Sleep(0700);
-					}
-					else {
-						cout << " Quantity cannot be negative\n";
-						Sleep(0700); Sleep(0700);
-					}
-
-					break;
-				case 48:
+				case '1': {
+					double newP = readDouble("Enter a new price: ", 0.0);
+					Carrot.price = newP;
+					std::cout << " Successfully changed!\n";
+					Sleep(700); Sleep(700);
+				} break;
+				case '2': {
+					long newQ = readInt("Enter a new quantity in storage: ", 1);
+					Carrot.quantity = static_cast<int>(newQ);
+					std::cout << " Successfully changed!\n";
+					Sleep(700); Sleep(700);
+				} break;
+				case '0':
 					j = 1000;
 					break;
-				}// 'switch' 
-			}// 'for' loop 
+				}
+			}
 			break;
+
 		case '3':
 			for (int j = 0; j < 1000; j++) {
 				system("cls");
-				cout << "\n  Product                                     Category                     Price         In Stock\n";
-				cout << "____________________________________________________________________________________________________ \n";
-				cout << " Onion, Weight                             Vegetables & Fruits             " << Onion.getPrice() << "\t\t " << Onion.getQuantity() << endl;
-				cout << "\n 1. Change price \n 2. Change the quantity in storage\n 0. Go back \n Press '1' or '2' or '0'\n\n ";
+				std::cout << "\n  Product                                     Category                     Price         In Stock\n";
+				std::cout << "____________________________________________________________________________________________________ \n";
+				std::cout << " Onion, Weight                             Vegetables & Fruits             " << Onion.getPrice() << "\t\t " << Onion.getQuantity() << std::endl;
+				std::cout << "\n 1. Change price \n 2. Change the quantity in storage\n 0. Go back \n Press '1' or '2' or '0'\n\n ";
 				switch (_getch()) {
-				case 49:
-					cout << "Enter a new price: ";
-					cin >> Ch_Price;
-					if (Ch_Price >= 0) {
-						Onion.price = Ch_Price;
-						cout << " Successfully changed!\n";
-						Sleep(0700); Sleep(0700);
-					}
-					else {
-						cout << " Price cannot be negative! Please check one more time.\n";
-						Sleep(0700); Sleep(0700);
-					}
-					break;
-				case 50:
-					cout << "Enter a new quantity in storage: ";
-					cin >> Ch_Quantity;
-					if (Ch_Quantity > 0) {
-						Onion.quantity = Ch_Quantity;
-						cout << " Successfully changed!\n";
-						Sleep(0700); Sleep(0700);
-					}
-					else {
-						cout << " Quantity cannot be negative\n";
-						Sleep(0700); Sleep(0700);
-					}
-					break;
-				case 48:
+				case '1': {
+					double newP = readDouble("Enter a new price: ", 0.0);
+					Onion.price = newP;
+					std::cout << " Successfully changed!\n";
+					Sleep(700); Sleep(700);
+				} break;
+				case '2': {
+					long newQ = readInt("Enter a new quantity in storage: ", 1);
+					Onion.quantity = static_cast<int>(newQ);
+					std::cout << " Successfully changed!\n";
+					Sleep(700); Sleep(700);
+				} break;
+				case '0':
 					j = 1000;
 					break;
-				}// 'switch' 
-			}// 'for' loop 
+				}
+			}
 			break;
+
 		case '4':
 			for (int j = 0; j < 1000; j++) {
 				system("cls");
-				cout << "\n  Product                                     Category                     Price         In Stock\n";
-				cout << "____________________________________________________________________________________________________ \n";
-				cout << " Water, Hydrolife without gas 750ml        Water & Beverages               " << Water.getPrice() << "\t\t " << Water.getQuantity() << endl;
-				cout << "\n 1. Change price \n 2. Change the quantity in storage\n 0. Go back \n Press '1' or '2' or '0'\n\n ";
-
+				std::cout << "\n  Product                                     Category                     Price         In Stock\n";
+				std::cout << "____________________________________________________________________________________________________ \n";
+				std::cout << " Water, Hydrolife without gas 750ml        Water & Beverages               " << Water.getPrice() << "\t\t " << Water.getQuantity() << std::endl;
+				std::cout << "\n 1. Change price \n 2. Change the quantity in storage\n 0. Go back \n Press '1' or '2' or '0'\n\n ";
 				switch (_getch()) {
-				case 49:
-					cout << "Enter a new price: ";
-					cin >> Ch_Price;
-
-					if (Ch_Price >= 0) {
-						Water.price = Ch_Price;
-						cout << " Successfully changed!\n";
-						Sleep(0700); Sleep(0700);
-					}
-					else {
-						cout << " Price cannot be negative! Please check one more time.\n";
-						Sleep(0700); Sleep(0700);
-					}
-					break;
-				case 50:
-					cout << "Enter a new quantity in storage: ";
-					cin >> Ch_Quantity;
-					if (Ch_Quantity > 0) {
-						Water.quantity = Ch_Quantity;
-						cout << " Successfully changed!\n";
-						Sleep(0700); Sleep(0700);
-					}
-					else {
-						cout << " Quantity cannot be negative\n";
-						Sleep(0700); Sleep(0700);
-					}
-					break;
-				case 48:
+				case '1': {
+					double newP = readDouble("Enter a new price: ", 0.0);
+					Water.price = newP;
+					std::cout << " Successfully changed!\n";
+					Sleep(700); Sleep(700);
+				} break;
+				case '2': {
+					long newQ = readInt("Enter a new quantity in storage: ", 1);
+					Water.quantity = static_cast<int>(newQ);
+					std::cout << " Successfully changed!\n";
+					Sleep(700); Sleep(700);
+				} break;
+				case '0':
 					j = 1000;
 					break;
-				}// 'switch' 
-			}// 'for' loop 
+				}
+			}
 			break;
+
 		case '5':
 			for (int j = 0; j < 1000; j++) {
 				system("cls");
-				cout << "\n  Product                                     Category                     Price         In Stock\n";
-				cout << "____________________________________________________________________________________________________ \n";
-				cout << " Drink, Aloe Original 500ml                Water & Beverages               " << Pepsi.getPrice() << "\t\t " << Pepsi.getQuantity() << endl;
-				cout << "\n 1. Change price \n 2. Change the quantity in storage\n 0. Go back \n Press '1' or '2' or '0'\n\n ";
-
+				std::cout << "\n  Product                                     Category                     Price         In Stock\n";
+				std::cout << "____________________________________________________________________________________________________ \n";
+				std::cout << " Drink, Aloe Original 500ml                Water & Beverages               " << Pepsi.getPrice() << "\t\t " << Pepsi.getQuantity() << std::endl;
+				std::cout << "\n 1. Change price \n 2. Change the quantity in storage\n 0. Go back \n Press '1' or '2' or '0'\n\n ";
 				switch (_getch()) {
-				case 49:
-					cout << "Enter a new price: ";
-					cin >> Ch_Price;
-
-					if (Ch_Price >= 0) {
-						Pepsi.price = Ch_Price;
-						cout << " Successfully changed!\n";
-						Sleep(0700); Sleep(0700);
-					}
-					else {
-						cout << " Price cannot be negative! Please check one more time.\n";
-						Sleep(0700); Sleep(0700);
-					}
-					break;
-				case 50:
-					cout << "Enter a new quantity in storage: ";
-					cin >> Ch_Quantity;
-
-					if (Ch_Quantity > 0) {
-						Pepsi.quantity = Ch_Quantity;
-						cout << " Successfully changed!\n";
-						Sleep(0700); Sleep(0700);
-					}
-					else {
-						cout << " Quantity cannot be negative\n";
-						Sleep(0700); Sleep(0700);
-					}
-					break;
-				case 48:
+				case '1': {
+					double newP = readDouble("Enter a new price: ", 0.0);
+					Pepsi.price = newP;
+					std::cout << " Successfully changed!\n";
+					Sleep(700); Sleep(700);
+				} break;
+				case '2': {
+					long newQ = readInt("Enter a new quantity in storage: ", 1);
+					Pepsi.quantity = static_cast<int>(newQ);
+					std::cout << " Successfully changed!\n";
+					Sleep(700); Sleep(700);
+				} break;
+				case '0':
 					j = 1000;
 					break;
-				}// 'switch' 
-			}// 'for' loop 
+				}
+			}
 			break;
+
 		case '6':
 			for (int j = 0; j < 1000; j++) {
 				system("cls");
-				cout << "\n  Product                                     Category                     Price         In Stock\n";
-				cout << "____________________________________________________________________________________________________ \n";
-				cout << " Nectar, Zet Apple 125ml                   Water & Beverages               " << Nectar.getPrice() << "\t\t " << Nectar.getQuantity() << endl;
-				cout << "\n 1. Change price \n 2. Change the quantity in storage\n 0. Go back \n Press '1' or '2' or '0'\n\n ";
-
+				std::cout << "\n  Product                                     Category                     Price         In Stock\n";
+				std::cout << "____________________________________________________________________________________________________ \n";
+				std::cout << " Nectar, Zet Apple 125ml                   Water & Beverages               " << Nectar.getPrice() << "\t\t " << Nectar.getQuantity() << std::endl;
+				std::cout << "\n 1. Change price \n 2. Change the quantity in storage\n 0. Go back \n Press '1' or '2' or '0'\n\n ";
 				switch (_getch()) {
-				case 49:
-					cout << "Enter a new price: ";
-					cin >> Ch_Price;
-					if (Ch_Price >= 0) {
-						Nectar.price = Ch_Price;
-						cout << " Successfully changed!\n";
-						Sleep(0700); Sleep(0700);
-					}
-					else {
-						cout << " Price cannot be negative! Please check one more time.\n";
-						Sleep(0700); Sleep(0700);
-					}
-					break;
-				case 50:
-					cout << "Enter a new quantity in storage: ";
-					cin >> Ch_Quantity;
-					if (Ch_Quantity > 0) {
-						Nectar.quantity = Ch_Quantity;
-						cout << " Successfully changed!\n";
-						Sleep(0700); Sleep(0700);
-					}
-					else {
-						cout << " Quantity cannot be negative\n";
-						Sleep(0700); Sleep(0700);
-					}
-					break;
-				case 48:
+				case '1': {
+					double newP = readDouble("Enter a new price: ", 0.0);
+					Nectar.price = newP;
+					std::cout << " Successfully changed!\n";
+					Sleep(700); Sleep(700);
+				} break;
+				case '2': {
+					long newQ = readInt("Enter a new quantity in storage: ", 1);
+					Nectar.quantity = static_cast<int>(newQ);
+					std::cout << " Successfully changed!\n";
+					Sleep(700); Sleep(700);
+				} break;
+				case '0':
 					j = 1000;
 					break;
-				}// 'switch' 
-			}// 'for' loop 
+				}
+			}
 			break;
+
 		case '7':
 			for (int j = 0; j < 1000; j++) {
 				system("cls");
-				cout << "\n  Product                                     Category                     Price         In Stock\n";
-				cout << "____________________________________________________________________________________________________ \n";
-				cout << " Pizza                                   Bread & Bakery Products           " << Pizza.getPrice() << "\t " << Pizza.getQuantity() << endl;
-				cout << "\n 1. Change price \n 2. Change the quantity in storage\n 0. Go back \n Press '1' or '2' or '0'\n\n ";
+				std::cout << "\n  Product                                     Category                     Price         In Stock\n";
+				std::cout << "____________________________________________________________________________________________________ \n";
+				std::cout << " Pizza                                   Bread & Bakery Products           " << Pizza.getPrice() << "\t " << Pizza.getQuantity() << std::endl;
+				std::cout << "\n 1. Change price \n 2. Change the quantity in storage\n 0. Go back \n Press '1' or '2' or '0'\n\n ";
 				switch (_getch()) {
-				case 49:
-					cout << "Enter a new price: ";
-					cin >> Ch_Price;
-					if (Ch_Price >= 0) {
-						Pizza.price = Ch_Price;
-						cout << " Successfully changed!\n";
-						Sleep(0700); Sleep(0700);
-					}
-					else {
-						cout << " Price cannot be negative! Please check one more time.\n";
-						Sleep(0700); Sleep(0700);
-					}
-					break;
-				case 50:
-					cout << "Enter a new quantity in storage: ";
-					cin >> Ch_Quantity;
-					if (Ch_Quantity > 0) {
-						Pizza.quantity = Ch_Quantity;
-						cout << " Successfully changed!\n";
-						Sleep(0700); Sleep(0700);
-					}
-					else {
-						cout << " Quantity cannot be negative\n";
-						Sleep(0700); Sleep(0700);
-					}
-					break;
-				case 48:
+				case '1': {
+					double newP = readDouble("Enter a new price: ", 0.0);
+					Pizza.price = newP;
+					std::cout << " Successfully changed!\n";
+					Sleep(700); Sleep(700);
+				} break;
+				case '2': {
+					long newQ = readInt("Enter a new quantity in storage: ", 1);
+					Pizza.quantity = static_cast<int>(newQ);
+					std::cout << " Successfully changed!\n";
+					Sleep(700); Sleep(700);
+				} break;
+				case '0':
 					j = 1000;
 					break;
-				}// 'switch' 
-			}// 'for' loop 
+				}
+			}
 			break;
+
 		case '8':
 			for (int j = 0; j < 1000; j++) {
 				system("cls");
-				cout << "\n  Product                                     Category                     Price         In Stock\n";
-				cout << "____________________________________________________________________________________________________ \n";
-				cout << " Burger                                  Bread & Bakery Products           " << Burger.getPrice() << "\t" << Burger.getQuantity() << endl;
-				cout << "\n 1. Change price \n 2. Change the quantity in storage\n 0. Go back \n Press '1' or '2' or '0'\n\n ";
+				std::cout << "\n  Product                                     Category                     Price         In Stock\n";
+				std::cout << "____________________________________________________________________________________________________ \n";
+				std::cout << " Burger                                  Bread & Bakery Products           " << Burger.getPrice() << "\t" << Burger.getQuantity() << std::endl;
+				std::cout << "\n 1. Change price \n 2. Change the quantity in storage\n 0. Go back \n Press '1' or '2' or '0'\n\n ";
 				switch (_getch()) {
-				case 49:
-					cout << "Enter a new price: ";
-					cin >> Ch_Price;
-					if (Ch_Price >= 0) {
-						Burger.price = Ch_Price;
-						cout << " Successfully changed!\n";
-						Sleep(0700); Sleep(0700);
-					}
-					else {
-						cout << " Price cannot be negative! Please check one more time.\n";
-						Sleep(0700); Sleep(0700);
-					}
-					break;
-				case 50:
-					cout << "Enter a new quantity in storage: ";
-					cin >> Ch_Quantity;
-					if (Ch_Quantity > 0) {
-						Burger.quantity = Ch_Quantity;
-						cout << " Successfully changed!\n";
-						Sleep(0700); Sleep(0700);
-					}
-					else {
-						cout << " Quantity cannot be negative\n";
-						Sleep(0700); Sleep(0700);
-					}
-					break;
-				case 48:
+				case '1': {
+					double newP = readDouble("Enter a new price: ", 0.0);
+					Burger.price = newP;
+					std::cout << " Successfully changed!\n";
+					Sleep(700); Sleep(700);
+				} break;
+				case '2': {
+					long newQ = readInt("Enter a new quantity in storage: ", 1);
+					Burger.quantity = static_cast<int>(newQ);
+					std::cout << " Successfully changed!\n";
+					Sleep(700); Sleep(700);
+				} break;
+				case '0':
 					j = 1000;
 					break;
-				}// 'switch' 
-			}// 'for' loop 
+				}
+			}
 			break;
+
 		case '9':
 			for (int j = 0; j < 1000; j++) {
 				system("cls");
-				cout << "\n  Product                                     Category                     Price         In Stock\n";
-				cout << "____________________________________________________________________________________________________ \n";
-				cout << " Potatoe Fries                           Bread & Bakery Products           " << Fries.getPrice() << "\t" << Fries.getQuantity() << endl;
-				cout << "\n 1. Change price \n 2. Change the quantity in storage\n 0. Go back \n Press '1' or '2' or '0'\n\n ";
+				std::cout << "\n  Product                                     Category                     Price         In Stock\n";
+				std::cout << "____________________________________________________________________________________________________ \n";
+				std::cout << " Potatoe Fries                           Bread & Bakery Products           " << Fries.getPrice() << "\t" << Fries.getQuantity() << std::endl;
+				std::cout << "\n 1. Change price \n 2. Change the quantity in storage\n 0. Go back \n Press '1' or '2' or '0'\n\n ";
 				switch (_getch()) {
-				case 49:
-					cout << "Enter a new price: ";
-					cin >> Ch_Price;
-
-					if (Ch_Price >= 0) {
-						Fries.price = Ch_Price;
-						cout << " Successfully changed!\n";
-						Sleep(0700); Sleep(0700);
-					}
-					else {
-						cout << " Price cannot be negative! Please check one more time.\n";
-						Sleep(0700); Sleep(0700);
-					}
-					break;
-				case 50:
-					cout << "Enter a new quantity in storage: ";
-					cin >> Ch_Quantity;
-					if (Ch_Quantity > 0) {
-						Fries.quantity = Ch_Quantity;
-						cout << " Successfully changed!\n";
-						Sleep(0700); Sleep(0700);
-					}
-					else {
-						cout << " Quantity cannot be negative\n";
-						Sleep(0700); Sleep(0700);
-					}
-					break;
-				case 48:
+				case '1': {
+					double newP = readDouble("Enter a new price: ", 0.0);
+					Fries.price = newP;
+					std::cout << " Successfully changed!\n";
+					Sleep(700); Sleep(700);
+				} break;
+				case '2': {
+					long newQ = readInt("Enter a new quantity in storage: ", 1);
+					Fries.quantity = static_cast<int>(newQ);
+					std::cout << " Successfully changed!\n";
+					Sleep(700); Sleep(700);
+				} break;
+				case '0':
 					j = 1000;
 					break;
-				}// 'switch' 
-			}// 'for' loop 
+				}
+			}
 			break;
+
 		case '0': {  // Back to Menu
 			system("cls");
 			i = 1000;
 			F_Owner_Main_Menu();
 		} break;
 
-		case 'i' || 'I': { // User info   
+		case 'i':
+		case 'I': { // User info
 			system("cls");
-			cout << "\n\t\t\t   User Information:" << endl;;
-			cout << "\t\t    _______________________________" << endl << endl;;
-			cout << "\t\t      User Name  : " << Name_Memory << endl;
-			cout << "\t\t      Telephone  : " << TellNum_Memory << endl;
-			cout << "\t\t      Login      : " << Login_Memory << endl;
-			cout << "\t\t      Password   : " << Parol_Memory << endl << endl << endl;
+			std::cout << "\n\t\t\t   User Information:" << std::endl;
+			std::cout << "\t\t    _______________________________" << std::endl << std::endl;
+			std::cout << "\t\t      User Name  : " << Name_Memory << std::endl;
+			std::cout << "\t\t      Telephone  : " << TellNum_Memory << std::endl;
+			std::cout << "\t\t      Login      : " << Login_Memory << std::endl;
+			// Do NOT reveal the password in plaintext; show masked/hidden instead
+			{
+				std::string pwd = Parol_Memory;
+				std::string mask(pwd.size(), '*');
+				std::cout << "\t\t      Password   : " << mask << " (hidden)" << std::endl << std::endl << std::endl; // PRECOGS_FIX: mask password output to prevent plaintext disclosure
+			}
 			system("pause");
 		}
-					   break;
+			break;
 
-		default: { cout << "\n\t\t      Your choice is not available in Menu" << endl;
-			cout << "\t\tPlease press any keyboard to continue program\n" << endl;
+		default: {
+			std::cout << "\n\t\t      Your choice is not available in Menu" << std::endl;
+			std::cout << "\t\tPlease press any keyboard to continue program\n" << std::endl;
 			system("pause");
 		} break;
 
 		} // switch
 
-	} // for loop for products in stock  
+	} // for
 }
 
 // Customer List
 void F_Owner_Customers_List() {
 	cout << endl;
 
-	ifstream in;
+	std::ifstream in("User_Info.txt");
 	int Num = 1;
-	string Info;
+	std::string username, phone, login, password;
 
-	in.open("User_Info.txt");
-	while (in) {
+	if (!in.is_open()) {
+		std::cerr << "\t Unable to open user info file.\n";
+		return; // PRECOGS_FIX: added explicit file-open check and early return to avoid further processing
+	}
+
+	while (true) {
+		// Read complete record (4 lines). If any read fails, stop to avoid partial/inconsistent output.
+		if (!std::getline(in, username)) break;
+		if (!std::getline(in, phone)) break;
+		if (!std::getline(in, login)) break;
+		if (!std::getline(in, password)) break;
+
 		cout << "\t " << Num << "." << endl;
 		cout << "\t-------------------------" << endl;
-		getline(in, Info);
-		cout << "\t User Name: " << Info << endl;
-		getline(in, Info);
-		cout << "\t Phone    : " << Info << endl;
-		getline(in, Info);
-		cout << "\t Login    : " << Info << endl;
-		getline(in, Info);
-		cout << "\t Password : " << Info << endl;
+		cout << "\t User Name: " << username << endl;
+		cout << "\t Phone    : " << phone << endl;
+		cout << "\t Login    : " << login << endl;
+		// Do NOT display plaintext passwords. Show redacted information only.
+		cout << "\t Password : [REDACTED] (length " << password.length() << ")" << endl; // PRECOGS_FIX: redact plaintext password output
 		Num++;
 		cout << endl;
 	}

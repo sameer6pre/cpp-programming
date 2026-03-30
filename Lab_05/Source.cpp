@@ -7,11 +7,17 @@
 using namespace std;
 
 float area(float radius)
-{ // function for calculating the area
-	float area;
-	area = (atan(1) * 4) * (pow(radius, 2)); //"atan" is the function which is finding the PI=3.14
-	return area;
-} // end function "area"
+{
+    // Validate input to avoid NaN/Inf/negative values and use double for intermediate precision.
+    if (!isfinite(radius) || radius <= 0.0f) {
+        std::cerr << "area(): invalid radius value" << std::endl;
+        return 0.0f; // PRECOGS_FIX: validate input to prevent NaN/Inf/negative radius propagation
+    }
+
+    double pi = atan(1.0) * 4.0;
+    double result = pi * static_cast<double>(radius) * static_cast<double>(radius);
+    return static_cast<float>(result); // PRECOGS_FIX: use double intermediates then cast to float to reduce precision loss
+}
 
 int main1()
 {
