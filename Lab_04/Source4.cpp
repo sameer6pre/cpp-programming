@@ -1,9 +1,3 @@
-// Lab assignment #5
-// ID:U1910049; Name: Zokirov Rustam
-// A program to add first seven terms of the following series using for loop:1 / !1 + 2 / !2 + 3 / !3 + ...
-
-#include <iostream>
-using namespace std;
 int main5()
 {
 	float sum = 0, fact = 1;
@@ -13,6 +7,8 @@ int main5()
 		sum += i / fact;
 	}
 	cout << "Sum is : " << sum << endl;
-	system("pause");
+	// PRECOGS_FIX: Remove call to system() and replace with safe, portable stdin-based pause to avoid invoking a shell
+	cout << "Press Enter to continue...";
+	cin.get();
 	return 0;
 }
