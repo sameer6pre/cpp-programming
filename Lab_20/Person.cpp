@@ -390,39 +390,46 @@ void F_Second_Program()
 
 int main()
 {
-	for (int k = 0; k < 1000; k++)
-	{
-		system("cls");
-		cout << " M A I N  M E N U\n"
-			 << "-------------------\n"
-			 << " 1. First Program\n"
-			 << " 2. Second Program\n"
-			 << " Your choice: \n";
+    for (int k = 0; k < 1000; k++)
+    {
+        // Replace system("cls") with a safe, non-shell-dependent clear simulation.
+        std::cout << std::string(100, '\n'); // PRECOGS_FIX: Removed system("cls") to avoid invoking shell
+        std::cout << " M A I N  M E N U\n"
+                 << "-------------------\n"
+                 << " 1. First Program\n"
+                 << " 2. Second Program\n"
+                 << " Your choice: \n";
 
-		switch (_getch())
-		{
-		// First Program
-		case 49:
-			system("cls");
-			F_First_Program();
-			system("pause");
-			break;
+        int ch = _getch();
+        switch (ch)
+        {
+        // First Program
+        case '1':
+            std::cout << std::string(100, '\n');
+            F_First_Program();
+            std::cout << "Press any key to continue..." << std::endl;
+            _getch(); // PRECOGS_FIX: Replaced system("pause") with direct key wait using _getch()
+            break;
 
-		// Second Program
-		case 50:
-			system("cls");
-			F_Second_Program();
-			system("pause");
-			break;
+        // Second Program
+        case '2':
+            std::cout << std::string(100, '\n');
+            F_Second_Program();
+            std::cout << "Press any key to continue..." << std::endl;
+            _getch();
+            break;
 
-		default:
-			cout << " Your choice is not available in Menu.\n Please try one more time\n\n";
-			system("pause");
-			break;
+        default:
+            std::cout << " Your choice is not available in Menu.\n Please try one more time\n\n";
+            std::cout << "Press any key to continue..." << std::endl;
+            _getch();
+            break;
 
-		} // switch
-	}	  // for loop
+        } // switch
+    }     // for loop
 
-	system("pause");
-	return 0;
+    std::cout << "Press any key to exit..." << std::endl;
+    _getch();
+    return 0;
 }
+
