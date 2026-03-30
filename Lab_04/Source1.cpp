@@ -1,8 +1,5 @@
-// Lab assignment #5
-// ID:U1910049; Name:Zokirov Rustam
-// Control structure - Nested Loop
-
 #include <iostream>
+#include <limits>
 using namespace std;
 int main2()
 {
@@ -17,6 +14,9 @@ int main2()
 		}
 		cout << endl;
 	}
-	system("pause");
+
+	// PRECOGS_FIX: Removed use of system() to avoid invoking the OS shell; use a safe, standard input-based pause instead.
+	cout << "Press Enter to continue...";
+	cin.ignore(numeric_limits<streamsize>::max(), '\n');
 	return 0;
 }
